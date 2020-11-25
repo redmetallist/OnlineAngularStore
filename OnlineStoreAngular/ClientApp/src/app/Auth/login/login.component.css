@@ -1,0 +1,61 @@
+p {
+  font-size: 1.5rem;
+}
+input.ng-invalid.ng-touched{
+  border: 1px solid red;
+}
+input.ng-valid.ng-touched {
+  border: 1px solid green;
+}
+
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  color: #666;
+}
+
+ul {
+  list-style: none;
+}
+
+
+.btn:disabled {
+  background: #ccc;
+  color: #000;
+  cursor: not-allowed;
+}
+
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+input {
+  margin-bottom: 0;
+}
+
+.validation {
+  color: red;
+}
+
+
+.login-box {
+  width: 100%;
+  margin: auto;
+  max-width: 525px;
+  position: relative;
+
+}
+.forgot{
+ display: block;
+  text-align: center;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.forgot small{
+  font-size: 16px;
+}

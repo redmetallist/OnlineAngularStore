@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 mx-auto p-0">
+
+        <div class="login-box">
+          <form [formGroup]="form" (ngSubmit)="postData()" class="border-0">
+            <h1>Login</h1>
+
+            <div class="form-group">
+              <label>Email</label>
+              <input class="form-control" type="text" formControlName="email" placeholder="Email" [(ngModel)]="email">
+              <div
+                *ngIf="form.get('email').invalid && form.get('email').touched"
+                class="validation"
+              >
+                <small *ngIf="form.get('email').errors.required"
+
+                >field email cant be empty </small>
+                <small *ngIf="form.get('email').errors.email"
+                >write correct data</small>
+                <small *ngIf="form.get('email').errors.restrictedEmail">Email {{form.get('email').value}}
+                  forbidden</small>
+                <small *ngIf="form.get('email').errors.uniqEmail">Email {{form.get('email').value}} busy</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Password</label>
+              <input class="form-control" type="password" formControlName="password" placeholder="Password"
+                     [(ngModel)]="passHash">
+
+              <pre>{{form.get('password').errors | json}} </pre>
+
+              <div
+                *ngIf="form.get('password').invalid && form.get('password').touched"
+                class="validation">
+                <small *ngIf="form.get('password').errors.required">pass cannot be empty </small>
+                <small *ngIf="form.get('password').errors.minlength">length should be
+                  more {{form.get('password').errors.minlength.requiredLength}}.
+                  now length {{form.get('password').errors.minlength.actualLength}}</small>
+
+              </div>
+            </div>
+            <button class="btn btn-primary" type="submit" [disabled]="form.invalid || form.pending">Login</button>
+
+            <a [routerLink]="['/register']" class="forgot" href="#"><small>Do not have an account?</small></a>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+</div>
+

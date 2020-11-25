@@ -1,44 +1,67 @@
 <header>
-  <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
-  >
+  <div style="background-color:  #F8F8F8;">
     <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">OnlineStoreAngular</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target=".navbar-collapse"
-        aria-label="Toggle navigation"
-        [attr.aria-expanded]="isExpanded"
-        (click)="toggle()"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div
-        class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
-        [ngClass]="{ show: isExpanded }"
-      >
-        <ul class="navbar-nav flex-grow">
-          <li
-            class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/counter']"
-              >Counter</a
-            >
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/fetch-data']"
-              >Fetch data</a
-            >
-          </li>
-        </ul>
-      </div>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" [routerLink]="['/']">OnlineStore</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                 aria-haspopup="true" aria-expanded="false">
+                Dropdown
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+
+          </ul>
+
+
+          <ul class="navbar-nav nav-flex-icons ml-auto">
+            <div class="dropdown">
+              <button [routerLinkActive]="['link-active']" [routerLink]="['/cart']" type="button" class="btn"
+                      data-toggle="dropdown">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i> Cart <span
+                class="badge badge-pill badge-danger">3</span>
+              </button>
+            </div>
+
+            <div *ngIf="isAuth; else auth">
+              <li class="nav-item">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                  <img src="https://i.pinimg.com/originals/61/e7/8b/61e78b08a8dd18779132812218a9f2a8.jpg"
+                       class="rounded-corners"
+                       style="height: 34px; " alt="avatar image">
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdownMenuLink-55">
+                  <app-user-role></app-user-role>
+
+                </div>
+              </li>
+            </div>
+            <ng-template #auth>
+
+              <li class="nav-item " [routerLinkActive]="['link-active']">
+                <a class="btn" [routerLink]="['/login']"
+                >Login</a
+                >
+              </li>
+            </ng-template>
+          </ul>
+        </div>
+      </nav>
     </div>
-  </nav>
+  </div>
 </header>
+

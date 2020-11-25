@@ -1,0 +1,42 @@
+.card{
+  margin-top: 0.7rem;
+}
+.price {
+  font-size: 18px
+}
+
+.sm-text {
+  font-size: 14px
+}
+
+.fa-star {
+  color: #FF6F00;
+  cursor: pointer
+}
+
+.fa-star-o {
+  color: #FF6F00;
+  cursor: pointer
+}
+
+.to-cart  {
+  font-size: 14px;
+}
+
+.like {
+  color: #757575;
+  font-weight: bold;
+  background-color: #EEEEEE;
+  padding: 7px;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.like-checked {
+  color: #E53935
+}
+
+.like:hover {
+  color: #E53935;
+  cursor: pointer
+}
