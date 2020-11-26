@@ -27,27 +27,28 @@ export class ShowCategoriesComponent implements OnInit {
     })
 
     this.getCategories();
-    this.showAllCategories();
+   // this.showAllCategories();
   }
 
   sortedCategories: Category[]= [];
 
 
   getCategories(){
-    // this.loading = true;
-    // this.http.get<Category []>(this.baseUrl + 'api/categories')
-    //   .subscribe(categories => {
-    //     console.log(categories);
-    //     this.AllCategories = categories;
-    //     this.loading = false;
-    //     this.iSortNodes();
-    //   });
-this.AllCategories=[{id:1, title:'Parent1', parentCategory:null},
-  {id:2, title:'child1', parentCategory:1},
-  {id:3, title:'child 1-1', parentCategory:2},
-  {id:4, title:'Parent2', parentCategory:null},
-  {id:5, title:'child2', parentCategory:4},
-  {id:6, title:'child 2-1', parentCategory:5}]
+  //  this.loading = true;
+    this.http.get<Category []>(this.baseUrl + 'api/categories')
+      .subscribe(categories => {
+        console.log(categories);
+        this.AllCategories = categories;
+       // this.loading = false;
+        this.iSortNodes();
+        this.showAllCategories();
+      });
+// this.AllCategories=[{id:1, title:'Parent1', parentCategory:null},
+//   {id:2, title:'child1', parentCategory:1},
+//   {id:3, title:'child 1-1', parentCategory:2},
+//   {id:4, title:'Parent2', parentCategory:null},
+//   {id:5, title:'child2', parentCategory:4},
+//   {id:6, title:'child 2-1', parentCategory:5}]
     this.iSortNodes();
 
   }

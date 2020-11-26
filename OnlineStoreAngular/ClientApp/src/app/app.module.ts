@@ -16,6 +16,7 @@ import {ProductComponent} from "./product/product.component";
 import {ProductsComponent} from "./products/products.component";
 import {UserRoleComponent} from "./user-role/user-role.component";
 import {CartComponent} from "./cart/cart.component";
+import {UserService} from "./services/user.service";
 
 
 @NgModule({
@@ -39,7 +40,7 @@ import {CartComponent} from "./cart/cart.component";
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers:[UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

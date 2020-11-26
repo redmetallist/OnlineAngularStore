@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import {User} from "../../services/user.service";
+import {User, UserService} from "../../services/user.service";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 
@@ -12,12 +12,13 @@ import {Router} from "@angular/router";
 export class LoginComponent {
 
   constructor(private http: HttpClient,
-              @Inject('BASE_URL') private baseUrl: string, private router: Router) { }
+              @Inject('BASE_URL') private baseUrl: string, private router: Router,  private user:UserService) {}
 
   form: FormGroup;
   email = ''
   passHash=''
   result= ''
+  globalRole
 
   ngOnInit(): void {
     this.form = new FormGroup({
@@ -33,16 +34,20 @@ export class LoginComponent {
         passwordHash: this.passHash, userData: {firstName:null, lastName: null },
         email : this.email
       }
+
      // this.loading = true;
       this.http.post<User>(this.baseUrl + 'api/login', newUser)
         .subscribe(result => {
           console.log('result ', result);
           this.result=result.toString()
+          if(this.result!= "error")
+          {
+            this.user.role=this.result;
+            this.user.isAuth=true;
+            this.router.navigate([''])
+          }
         });
-      if(this.result === "true")
-      {
-        this.router.navigate([''])
-      }
+
 
 
     } else

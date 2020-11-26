@@ -17,7 +17,6 @@ namespace OnlineStoreAngular
     public class Startup
     {
         private string _contentRootPath = "";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -55,6 +54,9 @@ namespace OnlineStoreAngular
             services.AddDbContext<Context.AppContext>(options =>
                 options.UseSqlServer(connection));
             services.AddControllers();
+
+            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +84,7 @@ namespace OnlineStoreAngular
                 app.UseSpaStaticFiles();
             }
 
+
             app.UseRouting();
             // who are you?
             app.UseAuthentication();
@@ -91,9 +94,15 @@ namespace OnlineStoreAngular
 
             app.UseEndpoints(endpoints =>
             {
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "/{controller}/{action=Index}/{id?}");
+
+
+
+
+
             });
 
             app.UseSpa(spa =>

@@ -36,7 +36,7 @@
               </button>
             </div>
 
-            <div *ngIf="isAuth; else auth">
+            <div *ngIf="this.user.isAuth; else auth">
               <li class="nav-item">
                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
