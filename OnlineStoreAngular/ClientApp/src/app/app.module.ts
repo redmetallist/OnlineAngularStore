@@ -7,7 +7,6 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
 import {AppRoutingModule} from "./app-routing.module";
 import {ShowCategoriesComponent} from "./categories/show-categories/show-categories.component";
 import {RegisterComponent} from "./Auth/register/register.component";
@@ -24,7 +23,6 @@ import {UserService} from "./services/user.service";
         AppComponent,
         NavMenuComponent,
         HomeComponent,
-        CounterComponent,
         ShowCategoriesComponent,
         RegisterComponent,
         LoginComponent,

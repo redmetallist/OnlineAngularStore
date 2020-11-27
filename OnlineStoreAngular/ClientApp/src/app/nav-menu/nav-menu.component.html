@@ -36,7 +36,7 @@
               </button>
             </div>
 
-            <div *ngIf="this.user.isAuth; else auth">
+            <div *ngIf="isAuth; else noAuth">
               <li class="nav-item">
                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-55" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
@@ -50,7 +50,7 @@
                 </div>
               </li>
             </div>
-            <ng-template #auth>
+            <ng-template #noAuth>
 
               <li class="nav-item " [routerLinkActive]="['link-active']">
                 <a class="btn" [routerLink]="['/login']"

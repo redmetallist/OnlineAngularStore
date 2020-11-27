@@ -9,8 +9,11 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Http;
-
-
+using OnlineStoreAngular.Models;
+using System;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace OnlineStoreAngular
 {
@@ -35,12 +38,70 @@ namespace OnlineStoreAngular
                 o.MemoryBufferThreshold = int.MaxValue;
             });
 
-            services.AddAuthentication("CookieAuthentication")
-                 .AddCookie("CookieAuthentication", config =>
-                 {
-                     config.Cookie.Name = "UserLoginCookie";
-                     config.LoginPath = "/login";
-                 });
+            //services.AddAuthentication("CookieAuthentication")
+            //     .AddCookie("CookieAuthentication", config =>
+            //     {
+            //         config.Cookie.Name = "UserLoginCookie";
+            //         config.LoginPath = "/login";
+            //     });
+
+
+            //// Get JWT Token Settings from JwtSettings.json file
+            //JwtSettings settings;
+            //settings = GetJwtSettings();
+            //services.AddSingleton<JwtSettings>(settings);
+            //// Register Jwt as the Authentication service
+            //services.AddAuthentication(options =>
+            //{
+            //    options.DefaultAuthenticateScheme = "JwtBearer";
+            //    options.DefaultChallengeScheme = "JwtBearer";
+            //})
+            //.AddJwtBearer("JwtBearer", jwtBearerOptions =>
+            //{
+            //    jwtBearerOptions.TokenValidationParameters =
+            //  new TokenValidationParameters
+            //      {
+            //          ValidateIssuerSigningKey = true,
+            //          IssuerSigningKey = new SymmetricSecurityKey(
+            //      Encoding.UTF8.GetBytes(settings.Key)),
+            //          ValidateIssuer = true,
+            //          ValidIssuer = settings.Issuer,
+
+            //          ValidateAudience = true,
+            //          ValidAudience = settings.Audience,
+
+            //          ValidateLifetime = true,
+            //          ClockSkew = TimeSpan.FromMinutes(
+            //             settings.MinutesToExpiration)
+            //      };
+            //});
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                  .AddJwtBearer(options =>
+                  {
+                      options.RequireHttpsMetadata = false;
+                      options.TokenValidationParameters = new TokenValidationParameters
+                      {
+                            // укзывает, будет ли валидироваться издатель при валидации токена
+                            ValidateIssuer = true,
+                            // строка, представляющая издателя
+                            ValidIssuer = AuthOptions.ISSUER,
+
+                            // будет ли валидироваться потребитель токена
+                            ValidateAudience = true,
+                            // установка потребителя токена
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            // будет ли валидироваться время существования
+                            ValidateLifetime = true,
+
+                            // установка ключа безопасности
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            // валидация ключа безопасности
+                            ValidateIssuerSigningKey = true,
+                      };
+                  });
+
+
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -117,6 +178,18 @@ namespace OnlineStoreAngular
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+        }
+
+        public JwtSettings GetJwtSettings()
+        {
+            JwtSettings settings = new JwtSettings();
+
+            settings.Key = Configuration["JwtSettings:key"];
+            settings.Audience = Configuration["JwtSettings:audience"];
+            settings.Issuer = Configuration["JwtSettings:issuer"];
+            settings.MinutesToExpiration = Convert.ToInt32(Configuration["JwtSettings:minutesToExpiration"]);
+
+            return settings;
         }
     }
 }
