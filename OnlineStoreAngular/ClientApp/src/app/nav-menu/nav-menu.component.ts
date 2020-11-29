@@ -10,7 +10,7 @@ import {AuthService} from "../services/auth.service";
 })
 export class NavMenuComponent {
 
-   isAuth: boolean;
+   isAuth: boolean = false;
 constructor(private Auth:AuthService) {
 this.isAuth=this.Auth.logIn();
 console.log(this.isAuth);

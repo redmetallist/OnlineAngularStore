@@ -17,9 +17,14 @@
               <div class="stars"> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>
             </div>
           </div>
-          <div class="row">
-            <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>
+          <div *ngIf="isAuth;else noAuth">
+            <div class="row" >
+              <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>
+            </div>
           </div>
+          <ng-template #noAuth>
+            <a  href="#" class="to-cart btn btn-success btn-block disabled"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>
+          </ng-template>
         </div>
       </div>
     </div>
@@ -40,9 +45,14 @@
               <div class="stars"> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>
             </div>
           </div>
-          <div class="row">
+          <div *ngIf="isAuth;else noAuth">
+          <div class="row" >
             <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>
           </div>
+          </div>
+          <ng-template #noAuth>
+            <a  href="#" class="to-cart btn btn-success btn-block disabled"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>
+          </ng-template>
         </div>
       </div>
     </div><div class="col-4 col-md-4 col-lg-4">

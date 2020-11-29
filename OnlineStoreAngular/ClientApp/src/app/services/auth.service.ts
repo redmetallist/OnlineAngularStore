@@ -9,27 +9,60 @@ import jwt_decode from 'jwt-decode';
 })
 export class AuthService {
 
-  uri = 'http://localhost:5000/api';
- private token;
   private result: string;
 
-  constructor(private http: HttpClient,private router: Router) { }
-
-  login(user: User, baseUrl: string) {
-    this.http.post<User>(baseUrl + 'api/login', user)
-      .subscribe((result:any) => {
-
-        console.log('result ', result);
-
-        this.result=result.toString()
-        localStorage.setItem('auth_token', result.access_token);
-
-      },
-      (error) => {
-      console.log(error.status);
-      // get the status as error.status
+  constructor(private http: HttpClient,private router: Router) {
+    let promise = new Promise(function(resolve, reject) {
+      // функция-исполнитель (executor)
+      // "певец"
     });
-}
+  }
+
+  public login(user: User, baseUrl: string):Promise<boolean>{
+    return new Promise(( resolve,reject) => {
+      let isOk = false;
+      this.http.post<User>(baseUrl + 'api/login', user)
+        .subscribe((result: any) => {
+            console.log('result ', result);
+            this.result = result.toString()
+            localStorage.setItem('auth_token', result.access_token);
+            isOk = true;
+            resolve(isOk);
+            //this.router.navigate([''])
+          },
+          (error) => {
+            console.log(error.status);
+            isOk = false;
+            reject(isOk);
+            // get the status as error.status
+          });
+    })
+
+  }
+
+
+
+
+  // login(user: User, baseUrl: string)  {
+  //   let isOk=false;
+  //   this.http.post<User>(baseUrl + 'api/login', user)
+  //     .subscribe((result:any) => {
+  //         console.log('result ', result);
+  //         this.result=result.toString()
+  //         localStorage.setItem('auth_token', result.access_token);
+  //         isOk=true;
+  //         //this.router.navigate([''])
+  //       },
+  //       (error) => {
+  //         console.log(error.status);
+  //         isOk=false;
+  //         // get the status as error.status
+  //       });
+  //   return isOk;
+  // }
+
+
+
 
 
   public logout() {

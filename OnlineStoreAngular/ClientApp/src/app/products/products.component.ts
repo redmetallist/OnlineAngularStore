@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-products',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductsComponent implements OnInit {
 
-  constructor() { }
+  isAuth: boolean;
+  constructor(private Auth:AuthService) {
+    this.isAuth=this.Auth.logIn();}
 
   ngOnInit() {
   }
