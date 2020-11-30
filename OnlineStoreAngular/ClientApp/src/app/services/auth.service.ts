@@ -12,10 +12,7 @@ export class AuthService {
   private result: string;
 
   constructor(private http: HttpClient,private router: Router) {
-    let promise = new Promise(function(resolve, reject) {
-      // функция-исполнитель (executor)
-      // "певец"
-    });
+
   }
 
   public login(user: User, baseUrl: string):Promise<boolean>{
@@ -60,9 +57,6 @@ export class AuthService {
   //       });
   //   return isOk;
   // }
-
-
-
 
 
   public logout() {

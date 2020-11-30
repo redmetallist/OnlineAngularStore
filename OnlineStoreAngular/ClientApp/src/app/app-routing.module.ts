@@ -10,7 +10,7 @@ import {ProductComponent} from "./product/product.component";
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   // { path: 'products', component: ProductsComponent },
-  { path: 'product', component: ProductComponent },
+  { path: 'product/:id', component: ProductComponent },
   { path: 'categories', component: ShowCategoriesComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },

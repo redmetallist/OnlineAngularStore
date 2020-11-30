@@ -4,6 +4,7 @@ import {User, UserService} from "../../services/user.service";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {AuthService} from "../../services/auth.service";
+import {CartService} from "../../services/cart.service";
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import {AuthService} from "../../services/auth.service";
 export class LoginComponent {
 
   constructor(private http: HttpClient,
-              @Inject('BASE_URL') private baseUrl: string, private router: Router, private user: UserService, private auth: AuthService) {
+              @Inject('BASE_URL') private baseUrl: string, private router: Router, private user: UserService, private auth: AuthService, private Cart: CartService) {
   }
 
   form: FormGroup;
@@ -36,11 +37,12 @@ export class LoginComponent {
         email: this.email
       }
 
-      const manager = this.auth;
-      manager.login(user, this.baseUrl).then((result) => {
+      const request = this.auth;
+     request.login(user, this.baseUrl).then((result) => {
         if (result) {
           this.user.isAuth = true;
           this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
+            this.Cart.SyncCartWithServer(this.baseUrl);
             location.reload();
           });
         }

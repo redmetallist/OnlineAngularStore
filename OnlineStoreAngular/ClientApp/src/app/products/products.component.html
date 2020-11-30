@@ -1,14 +1,15 @@
-<div class="col">
+<div class="container">
   <div class="row">
-    <div class="col-4 col-md-4 col-lg-4">
+<ng-container *ngFor="let product of products">
+    <div class="col-4 col-md-4 col-lg-4" >
       <div class="card">
         <div class="pr-3 row justify-content-end">
           <div class="fa fa-heart-o like like-checked"></div>
         </div>
-        <img class="card-img-top" src="https://i.pinimg.com/originals/61/e7/8b/61e78b08a8dd18779132812218a9f2a8.jpg" alt="Card image cap">
+        <img class="card-img-top" [src]="getImage(product.id)" alt="image">
         <div class="card-body">
-          <h4 class="card-title"><a [routerLink]="['/product']" title="View Product">Product title</a></h4>
-          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium exercitationem illum, molestiae praesentium sapiente suscipit!</p>
+          <h4 class="card-title"><a [routerLink]="['/product','1']" title="View Product">{{product.title}}</a></h4>
+          <p class="card-text">{{product.description}}</p>
           <div class="row">
             <div class="col-md-6">
               <p class="price">$79.<span class="sm-text">50</span></p>
@@ -28,7 +29,12 @@
         </div>
       </div>
     </div>
-    <div class="col-4 col-md-4 col-lg-4">
+
+</ng-container>
+
+
+
+       <div class="col-4 col-md-4 col-lg-4">
       <div class="card">
         <div class="pr-3 row justify-content-end">
           <div class="fa fa-heart-o like "></div>
@@ -147,3 +153,4 @@
 
   </div>
 </div>
+

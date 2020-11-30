@@ -1,6 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {UserService} from "../services/user.service";
 import {AuthService} from "../services/auth.service";
+import {CartService} from "../services/cart.service";
 
 @Component({
   selector: 'app-nav-menu',
@@ -11,9 +12,11 @@ import {AuthService} from "../services/auth.service";
 export class NavMenuComponent {
 
    isAuth: boolean = false;
-constructor(private Auth:AuthService) {
+   cartCount:number;
+constructor(private Auth:AuthService, private Cart:CartService) {
 this.isAuth=this.Auth.logIn();
 console.log(this.isAuth);
+this.cartCount=this.Cart.counterOfItemsInCart();
 }
 
 }

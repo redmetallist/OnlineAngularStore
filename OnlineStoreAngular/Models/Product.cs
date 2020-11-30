@@ -6,9 +6,8 @@ namespace OnlineStoreAngular.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string? Descriprion { get; set; }
-        public string ImagePath { get; set; }
-        public string IsSavedImage { get; set; }
-        public virtual ICollection<Category> Categories { get; set; }
+        public string? Description { get; set; }
+       
+        public int CategoryId { get; set; }
     }
 }
