@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {AuthService} from "../services/auth.service";
+import {Component, OnInit} from '@angular/core';
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-user-role',
@@ -7,13 +7,16 @@ import {AuthService} from "../services/auth.service";
   styleUrls: ['./user-role.component.css']
 })
 export class UserRoleComponent implements OnInit {
-auth;
-  constructor(auth:AuthService) {this.auth=auth }
+  auth;
+
+  constructor(auth: AuthService) {
+    this.auth = auth
+  }
 
   ngOnInit() {
   }
 
   logout() {
-   this.auth.logout();
+    this.auth.logout();
   }
 }

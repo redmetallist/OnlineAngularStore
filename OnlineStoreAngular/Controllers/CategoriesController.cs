@@ -21,7 +21,9 @@ namespace OnlineStoreAngular.Controllers
         [HttpGet]
         public IEnumerable<Category> Get()
         {
-            return db.Categories.ToList();
+            var categories= db.Categories.ToList();
+            db.Dispose();
+            return categories;
 
         }
 

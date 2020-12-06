@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, Input} from '@angular/core';
 import {UserService} from "../services/user.service";
 import {AuthService} from "../services/auth.service";
 import {CartService} from "../services/cart.service";
@@ -12,11 +12,15 @@ import {CartService} from "../services/cart.service";
 export class NavMenuComponent {
 
    isAuth: boolean = false;
-   cartCount:number;
+   role:string=''
+ cartCount:number=this.Cart.counterOfItemsInCart();
 constructor(private Auth:AuthService, private Cart:CartService) {
 this.isAuth=this.Auth.logIn();
-console.log(this.isAuth);
+this.role=this.Auth.getRole();
+console.log('is auth?',this.isAuth);
+console.log('your role is ',this.role);
 this.cartCount=this.Cart.counterOfItemsInCart();
 }
+
 
 }

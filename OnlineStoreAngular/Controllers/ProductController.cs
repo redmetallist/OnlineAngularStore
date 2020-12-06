@@ -10,10 +10,10 @@ namespace OnlineStoreAngular.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class ProductController : Controller
     {
         private Context.AppContext db;
+
         public ProductController(Context.AppContext context)
         {
             db = context;
@@ -41,17 +41,14 @@ namespace OnlineStoreAngular.Controllers
                 {
                     return StatusCode(502); //if cannot read file throw BadGateway status code
                 }
-
             }
 
             return NotFound(id);
-
         }
 
         [HttpGet("description/{id}")]
         public IActionResult GetProductDescription(int id)
         {
-
             string path = Directory.GetCurrentDirectory() + @"\Resources\Images";
 
             string str = Directory.GetCurrentDirectory();
@@ -61,26 +58,25 @@ namespace OnlineStoreAngular.Controllers
                 try
                 {
                     Product pr = db.Products.FirstOrDefault(x => x.Id == id);
-                    return Json(new Product { Id=pr.Id, Title = pr.Title, Description = pr.Description, CategoryId=pr.CategoryId });
+                    return Json(new Product
+                        {Id = pr.Id, Title = pr.Title, Description = pr.Description, CategoryId = pr.CategoryId, Cost = pr.Cost});
                 }
                 catch
                 {
-                    return StatusCode(500, $"500. Internal server error"); //if cannot read from database throw InternalServer error status code                   
+                    return
+                        StatusCode(500,
+                            $"500. Internal server error"); //if cannot read from database throw InternalServer error status code                   
                 }
-
             }
 
-            return StatusCode(404, $"404.Not found"); ;
-
+            return StatusCode(404, $"404.Not found");
+            ;
         }
-
-
 
 
         [HttpGet("getAll")]
         public IActionResult GetAllProducts()
         {
-
             string path = Directory.GetCurrentDirectory() + @"\Resources\Images";
 
             string str = Directory.GetCurrentDirectory();
@@ -89,32 +85,31 @@ namespace OnlineStoreAngular.Controllers
             {
                 try
                 {
-                   var pr = db.Products.ToList<Product>();
+                    var pr = db.Products.ToList<Product>();
+                    db.Dispose();
                     return Json(pr);
                 }
                 catch
                 {
-                    return StatusCode(500, $"500. Internal server error"); //if cannot read from database throw InternalServer error status code                   
+                    return
+                        StatusCode(500,
+                            $"500. Internal server error"); //if cannot read from database throw InternalServer error status code                   
                 }
-
             }
 
-            return StatusCode(404, $"404.Not found"); ;
-
+            return StatusCode(404, $"404.Not found");
+            ;
         }
-
 
 
         [Authorize(Roles = "Admin")]
         [HttpGet("create")]
         public IActionResult CreateProduct(Product product)
         {
-
             db.Products.Add(product);
             db.SaveChanges();
             int id = product.Id;
             return Json(id);
-
         }
 
         [Authorize(Roles = "Admin")]
@@ -138,11 +133,11 @@ namespace OnlineStoreAngular.Controllers
                         {
                             file.CopyTo(stream);
                         }
-                        return Ok(new { dbPath });
+
+                        return Ok(new {dbPath});
                     }
                     else
                         return BadRequest();
-
                 }
                 else
                 {
@@ -154,6 +149,5 @@ namespace OnlineStoreAngular.Controllers
                 return StatusCode(500, $"Internal server error: {ex}");
             }
         }
-
     }
 }

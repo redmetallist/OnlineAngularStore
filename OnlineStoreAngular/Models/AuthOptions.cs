@@ -5,10 +5,11 @@ namespace OnlineStoreAngular.Models
 {
     public class AuthOptions
     {
-        public const string ISSUER = "OnlineStoreServer"; // издатель токена
-        public const string AUDIENCE = "OnlineStoreClient"; // потребитель токена
-        const string KEY = "OnlineStoreClientsecretKey";   // ключ для шифрации
-        public const int LIFETIME = 1; // время жизни токена - 1 минута
+        public const string ISSUER = "OnlineStoreServer";
+        public const string AUDIENCE = "OnlineStoreClient";
+        const string KEY = "OnlineStoreClientsecretKey";
+        public const int LIFETIME = 60;
+
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
             return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));

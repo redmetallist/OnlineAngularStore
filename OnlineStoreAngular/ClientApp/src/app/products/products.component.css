@@ -40,6 +40,18 @@
   color: #E53935;
   cursor: pointer
 }
-.row{
-
+img {
+  text-align: center;
+  height: 200px;
+  width: auto;
+  background-color: #f8f8f9;
 }
+.product-img{
+  text-align: center;
+}
+
+/*.product-img>img{*/
+/*  max-width: 80%;*/
+/*  height: auto;*/
+/*}*/
+

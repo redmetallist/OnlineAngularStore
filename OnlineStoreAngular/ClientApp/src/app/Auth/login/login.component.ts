@@ -31,14 +31,13 @@ export class LoginComponent {
 
   postData() {
     if (this.form.valid) {
-
       const user: User = {
         passwordHash: this.passHash, userData: {firstName: null, lastName: null},
         email: this.email
       }
 
       const request = this.auth;
-     request.login(user, this.baseUrl).then((result) => {
+      request.login(user, this.baseUrl).then((result) => {
         if (result) {
           this.user.isAuth = true;
           this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {

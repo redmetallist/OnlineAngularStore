@@ -37,28 +37,6 @@ export class AuthService {
 
   }
 
-
-
-
-  // login(user: User, baseUrl: string)  {
-  //   let isOk=false;
-  //   this.http.post<User>(baseUrl + 'api/login', user)
-  //     .subscribe((result:any) => {
-  //         console.log('result ', result);
-  //         this.result=result.toString()
-  //         localStorage.setItem('auth_token', result.access_token);
-  //         isOk=true;
-  //         //this.router.navigate([''])
-  //       },
-  //       (error) => {
-  //         console.log(error.status);
-  //         isOk=false;
-  //         // get the status as error.status
-  //       });
-  //   return isOk;
-  // }
-
-
   public logout() {
     localStorage.removeItem('auth_token');
     location.reload();

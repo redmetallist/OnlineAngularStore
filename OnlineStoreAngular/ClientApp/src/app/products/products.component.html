@@ -6,7 +6,8 @@
         <div class="pr-3 row justify-content-end">
           <div class="fa fa-heart-o like like-checked"></div>
         </div>
-        <img class="card-img-top" [src]="getImage(product.id)" alt="image">
+        <div class="product-img">
+        <img class="card-img-top" [src]="getImage(product.id)" alt="image"></div>
         <div class="card-body">
           <h4 class="card-title"><a [routerLink]="['/product','1']" title="View Product">{{product.title}}</a></h4>
           <p class="card-text">{{product.description}}</p>
@@ -20,7 +21,7 @@
           </div>
           <div *ngIf="isAuth;else noAuth">
             <div class="row" >
-              <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>
+              <a  href="#" class="to-cart btn btn-success btn-block" (click)="addToCart(product)"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>
             </div>
           </div>
           <ng-template #noAuth>

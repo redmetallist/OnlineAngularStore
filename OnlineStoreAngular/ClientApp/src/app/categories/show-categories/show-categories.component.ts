@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Category, CategoryService} from "../../services/category.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-show-categories',
@@ -12,7 +13,7 @@ export class ShowCategoriesComponent implements OnInit {
 
   constructor(private http: HttpClient,
               @Inject('BASE_URL') private baseUrl: string,
-              private categoryService: CategoryService) {
+              private categoryService: CategoryService, private router: Router) {
 
 
   }
@@ -121,7 +122,11 @@ export class ShowCategoriesComponent implements OnInit {
     console.log(event)
     let target = event.target || event.currentTarget;
    let idAttr = target.attributes.id;
-    console.log(idAttr)
+    console.log('choosed category ',idAttr)
+    console.log( JSON.stringify(idAttr.nodeValue))
+    let str = idAttr.nodeValue.toString().substr(7,idAttr.nodeValue.length-6);
+    console.log(str)
+    //this.router.navigate[''];
 
   }
 

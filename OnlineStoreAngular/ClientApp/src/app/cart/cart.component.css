@@ -4,11 +4,10 @@ h3 {
 .text-navy {
   color: #1ab394;
 }
-.cart-product-imitation {
+img {
   text-align: center;
-  padding-top: 30px;
-  height: 80px;
-  width: 80px;
+  height: 100px;
+  width: auto;
   background-color: #f8f8f9;
 }
 .product-imitation.xl {

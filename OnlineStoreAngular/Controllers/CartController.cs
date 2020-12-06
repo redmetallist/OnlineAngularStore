@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+using OnlineStoreAngular.Models;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace OnlineStoreAngular.Controllers
 {
@@ -12,84 +11,69 @@ namespace OnlineStoreAngular.Controllers
     public class CartController : Controller
     {
         private Context.AppContext db;
+
         public CartController(Context.AppContext context)
         {
             db = context;
-          
-        }
-        // GET: CartController
-        public ActionResult Index()
-        {
-            return View();
         }
 
-        // GET: CartController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        
 
-        // GET: CartController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        //[Authorize(Roles = "User")]
+        //[HttpGet("addToCart/{id}")]
+        //public IActionResult GetProductDescription(int id)
+        //{
 
-        // POST: CartController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+
+        //    return StatusCode(404, $"404.Not found"); ;
+
+        //}
+
+        [HttpPost("addToCart")]
+        public IActionResult AddToCart([FromBody] int id)
         {
-            try
+            var username = User.Identity.Name; //if not auth or token expired =null
+            if (username != null)
             {
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    var user = db.Users.First(x => x.Email == username);
+                    var product = db.Products.First(x => x.Id == id);
+                    db.Cart.Add(new Cart {UserId = user.Id, ProductId = product.Id, Quantity = 1});
+                    db.SaveChanges();
+                    return StatusCode(200);
+                }
+                catch
+                {
+                    return StatusCode(500, "Internal server error");
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            return StatusCode(200, "Not authorized. Cart only local");
         }
 
-        // GET: CartController/Edit/5
-        public ActionResult Edit(int id)
+        //[Authorize]
+        [HttpGet("getCart")]
+        public IActionResult GetCart()
         {
-            return View();
-        }
+            var username = User.Identity.Name;
+            if (username != null)
+            {
+                try
+                {
+                    var user = db.Users.First(x => x.Email == username.ToString());
+                    var cart = db.Cart.ToList().Where(x => x.UserId == user.Id);
 
-        // POST: CartController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: CartController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+                    return new JsonResult(cart);
+                }
+                catch
+                {
+                    return StatusCode(500, "Internal server error");
+                }
+            }
 
-        // POST: CartController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return StatusCode(400);
         }
     }
 }

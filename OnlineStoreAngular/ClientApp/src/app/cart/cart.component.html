@@ -4,26 +4,27 @@
       <div class="col-md-9">
         <div class="ibox">
           <div class="ibox-title">
-            <span class="pull-right">(<strong>5</strong>) items</span>
+            <span class="pull-right">(<strong>{{productCart.length}}</strong>) items</span>
             <h5>Items in your cart</h5>
           </div>
+          <div *ngFor="let element of productCart">
+
           <div class="ibox-content">
             <div class="table-responsive">
               <table class="table shoping-cart-table">
                 <tbody>
                 <tr>
-                  <td width="90">
-                    <div class="cart-product-imitation">
-                    </div>
+                  <td width="100">
+                    <img [src]=element.imgsrc alt="">
                   </td>
                   <td class="desc">
                     <h3>
                       <a href="#" class="text-navy">
-                        Title Lorem ipsum.
+                        {{element.title}}
                       </a>
                     </h3>
                     <p class="small">
-                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, voluptatum.
+                    {{element.description}}
                     </p>
 
 
@@ -33,22 +34,20 @@
                     </div>
                   </td>
 
-                  <td>
-                    $180,00
-                    <s class="small text-muted">$230,00</s>
-                  </td>
                   <td width="65">
                     <input type="text" class="form-control" placeholder="1">
                   </td>
                   <td>
                     <h4>
-                      $180,00
+                      ${{element.cost}}
                     </h4>
                   </td>
                 </tr>
                 </tbody>
               </table>
             </div>
+
+          </div>
 
           </div>
 
@@ -72,7 +71,7 @@
                         Total
                     </span>
             <h2 class="font-bold">
-              $390,00
+              ${{totalCost}}
             </h2>
           </div>
         </div>

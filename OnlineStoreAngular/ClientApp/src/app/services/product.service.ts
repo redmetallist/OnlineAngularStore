@@ -36,7 +36,7 @@ export class ProductService {
 products:Product[]=[];
 
   public getProducts(baseUrl: string):Promise<Product[]>{
-    return new Promise(( resolve,reject) => {
+    return new Promise(( resolve) => {
       this.http.get<Product[]>(baseUrl + 'api/product/getAll')
         .subscribe((result: any) => {
             console.log('result ', result);
@@ -52,29 +52,24 @@ products:Product[]=[];
 
   }
 
+  public getProductsById(baseUrl: string, id:number):Promise<Product>{
+    return new Promise(( resolve) => {
+      this.http.get<Product>(baseUrl + 'api/product/description/'+id)
+        .subscribe((result: any) => {
+            console.log('result ', result);
+            this.products = result;
+            resolve(result);
+          },
+          (error) => {
+            console.log(error.status);
+            // reject([]);
+            // get the status as error.status
+          });
+    })
 
-
-
-  public logout() {
-    localStorage.removeItem('auth_token');
-    location.reload();
   }
 
-  public logIn(): boolean {
-    console.log(localStorage.getItem('auth_token') !== null)
-    return (localStorage.getItem('auth_token') !== null);
-  }
 
-  public  getRole():string {
-    let role = null
-    if (localStorage.getItem('auth_token') !== null) {
-
-      let decoded = jwt_decode(localStorage.getItem('auth_token'));
-      role = JSON.stringify(
-        decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
-    }
-    return role
-  }
 }
 
 export interface Product {
@@ -82,5 +77,6 @@ export interface Product {
   title: string
   description? : string
   categoryId:number
+  cost:number
 
 }

@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
+import {Injectable, Input, Output} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {User} from "./user.service";
-import {Category} from "./category.service";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
   private result: string;
+
   constructor(private http: HttpClient) { }
 
   public addToCart(id:number, baseUrl: string): boolean {
     let isOk: boolean = false;
+
     let localCart = [];
     if (localStorage.getItem('localCart') !== null) {
       localCart = JSON.parse(localStorage["localCart"]);
@@ -22,13 +23,14 @@ export class CartService {
       return true
     } //product already exist. do nothing
     else {
+      console.log('kyky')
       localCart.push(id);
-      this.http.post(baseUrl + 'api/addToCart', id)
+      console.log(typeof id, id)
+      this.http.post<number>(baseUrl + 'api/cart/addToCart', id)
         .subscribe((result: any) => {
-            console.log('result ', result);
-            this.result = result.toString();
+
             localStorage.removeItem('localCart');
-            localStorage["localCart"] = JSON.stringify(localCart);
+            localStorage['localCart'] = JSON.stringify(localCart);
             isOk = true;
           },
           (error) => {
@@ -49,7 +51,7 @@ public RemoveFromCart(id:number, baseUrl: string):boolean {
     let index = localCart.indexOf(id, 0);
     if (index > -1)
       localCart.splice(index, 1)
-    this.http.delete(baseUrl + 'api/removeFromCart/' + id)
+    this.http.delete(baseUrl + 'api/cart/removeFromCart/' + id)
       .subscribe(result => {
           console.log('result ', result);
           this.result = result.toString();
@@ -69,7 +71,7 @@ public RemoveFromCart(id:number, baseUrl: string):boolean {
   public SyncCartWithServer( baseUrl: string):boolean{
     let isOk=false;
     let cartItems;
-    this.http.get<CartIds[]>(baseUrl + 'api/syncCart')
+    this.http.get<CartIds[]>(baseUrl + 'api/cart/syncCart')
       .subscribe(cart => {
         console.log(cart);
         cartItems = cart;
@@ -77,6 +79,7 @@ public RemoveFromCart(id:number, baseUrl: string):boolean {
           localStorage.removeItem('localCart');
         }
         localStorage["localCart"] = JSON.stringify(cartItems);
+
         isOk=true;
       }),
     (error) => {
@@ -96,8 +99,36 @@ public RemoveFromCart(id:number, baseUrl: string):boolean {
    }
   }
 
+  public  GetCartFromServer( baseUrl: string): Promise<any[]> {
+    return new Promise(( resolve) => {
+    let cartItems;
+    this.http.get<any[]>(baseUrl + 'api/cart/getCart')
+      .subscribe(cart => {
+       // console.log(cart);
+        cartItems = cart;
+        resolve(cartItems);
+      }),
+      (error) => {
+        console.log(error.status);
+return null
+        // get the status as error.status
+      }
+  })
+  }
 
 }
+
 export  interface CartIds {
   id:number
 }
+
+export  interface CartProducts {
+  id:number
+  quantity:number
+  title:string
+  cost:number
+  imgsrc:string
+  description:string
+}
+
+
