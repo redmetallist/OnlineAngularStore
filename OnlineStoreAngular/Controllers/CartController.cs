@@ -39,9 +39,17 @@ namespace OnlineStoreAngular.Controllers
                 {
                     var user = db.Users.First(x => x.Email == username);
                     var product = db.Products.First(x => x.Id == id);
-                    db.Cart.Add(new Cart {UserId = user.Id, ProductId = product.Id, Quantity = 1});
-                    db.SaveChanges();
-                    return StatusCode(200);
+                    //var exist = db.Cart.Any(x => x.UserId == user.Id && x.ProductId == product.Id);
+                    //if (!exist)
+                   
+                        db.Cart.Add(new Cart {UserId = user.Id, ProductId = product.Id, Quantity = 1});
+                        db.SaveChanges();
+                        return StatusCode(200);
+                    
+                  //  else
+                    //{
+                   //     return StatusCode(200, "Product already exist");
+                   // }
                 }
                 catch
                 {

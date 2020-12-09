@@ -79,7 +79,7 @@ export class ShowCategoriesComponent implements OnInit {
   showAllCategories()
   {
     let initial=document.getElementById('initial');
-    console.log('sorted', this.sortedCategories)
+   // console.log('sorted', this.sortedCategories)
     for(let element of this.sortedCategories)
     {
       let parent;
@@ -93,7 +93,7 @@ export class ShowCategoriesComponent implements OnInit {
       }
       else {
        parent = document.getElementById('element'+element.parentCategory)
-        console.log(parent)
+       // console.log(parent)
         //console.log(document.getElementById('element'+element.parentCategory.toString()).nodeName)
         if(document.getElementById('element'+element.parentCategory.toString()).nodeName=='LI')
         {
@@ -122,10 +122,10 @@ export class ShowCategoriesComponent implements OnInit {
     console.log(event)
     let target = event.target || event.currentTarget;
    let idAttr = target.attributes.id;
-    console.log('choosed category ',idAttr)
-    console.log( JSON.stringify(idAttr.nodeValue))
+   // console.log('choosed category ',idAttr)
+   // console.log( JSON.stringify(idAttr.nodeValue))
     let str = idAttr.nodeValue.toString().substr(7,idAttr.nodeValue.length-6);
-    console.log(str)
+    //console.log(str)
     //this.router.navigate[''];
 
   }

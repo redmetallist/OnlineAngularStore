@@ -1,7 +1,8 @@
-import {Component, Inject, Input} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {UserService} from "../services/user.service";
 import {AuthService} from "../services/auth.service";
 import {CartService} from "../services/cart.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-nav-menu',
@@ -9,18 +10,28 @@ import {CartService} from "../services/cart.service";
   styleUrls: ['./nav-menu.component.css']
 
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit{
 
    isAuth: boolean = false;
    role:string=''
- cartCount:number=this.Cart.counterOfItemsInCart();
-constructor(private Auth:AuthService, private Cart:CartService) {
+  cartCount: number;
+
+constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService, private Cart:CartService) {
 this.isAuth=this.Auth.logIn();
 this.role=this.Auth.getRole();
 console.log('is auth?',this.isAuth);
 console.log('your role is ',this.role);
-this.cartCount=this.Cart.counterOfItemsInCart();
+  this.Cart.subject$.subscribe(x=> {this.cartCount=x})
+  this.Cart.SyncCartWithServer(this.baseUrl).then((serverCart) => {
+   // this.Cart.counterOfItemsInCart();
+  })
+
+
 }
+
+  ngOnInit(): void {
+  this.cartCount=0;
+  }
 
 
 }

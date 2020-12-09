@@ -39,10 +39,18 @@ export class CartComponent implements OnInit {
 
     })
     console.log('product cart for view: ', this.productCart)
+
   }
 
   ngOnInit() {
 
   }
 
+  RemoveItemFromCart(id:number) {
+
+    this.cart.removeFromCart(id, this.baseUrl).then(res=>{
+
+    })
+
+  }
 }

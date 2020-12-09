@@ -3,6 +3,7 @@ import {AuthService} from "../services/auth.service";
 import {Product, ProductService} from "../services/product.service";
 import {CartService} from "../services/cart.service";
 import {Router} from "@angular/router";
+import {observable} from "rxjs";
 
 @Component({
   selector: 'app-products',
@@ -40,11 +41,9 @@ products:Product[]=[]
   addToCart(product:Product) {
     let id:number=product.id;
     this.cart.addToCart(id,this.baseUrl)
-    const currentRoute = this.router.url;
+    this.cart.counterOfItemsInCart();
 
-   // location.reload()
 
-      //this.router.navigate[''];
 
   }
 }
