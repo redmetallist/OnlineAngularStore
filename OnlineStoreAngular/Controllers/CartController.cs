@@ -81,7 +81,7 @@ namespace OnlineStoreAngular.Controllers
                 }
             }
 
-            return StatusCode(400);
+            return StatusCode(401);
         }
     }
 }

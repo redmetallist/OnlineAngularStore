@@ -21,9 +21,9 @@ this.isAuth=this.Auth.logIn();
 this.role=this.Auth.getRole();
 console.log('is auth?',this.isAuth);
 console.log('your role is ',this.role);
-  this.Cart.subject$.subscribe(x=> {this.cartCount=x})
+
   this.Cart.SyncCartWithServer(this.baseUrl).then((serverCart) => {
-   // this.Cart.counterOfItemsInCart();
+
   })
 
 
@@ -31,6 +31,7 @@ console.log('your role is ',this.role);
 
   ngOnInit(): void {
   this.cartCount=0;
+    this.Cart.subject$.subscribe(x=> {this.cartCount=x})
   }
 
 
