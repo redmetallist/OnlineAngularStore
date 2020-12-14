@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import {Category, CategoryService} from "./category.service";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {User} from "./user.service";
-import jwt_decode from "jwt-decode";
+import {Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -36,12 +34,13 @@ export class ProductService {
 products:Product[]=[];
 
   public getProducts(baseUrl: string):Promise<Product[]>{
-    return new Promise(( resolve) => {
+    return new Promise(() => {
       this.http.get<Product[]>(baseUrl + 'api/product/getAll')
         .subscribe((result: any) => {
             console.log('result ', result);
             this.products = result;
-            resolve(result);
+           // resolve(result);
+            this.products$.next(result)
           },
           (error) => {
             console.log(error.status);
@@ -67,6 +66,23 @@ products:Product[]=[];
           });
     })
 
+  }
+  public products$ = new Subject<Product[]>();
+
+  public getProductInCategory(baseUrl: string, id:number):Promise<Product[]>{
+    return new Promise(() => {
+      this.http.get<Product[]>(baseUrl + 'api/product/getProductInCategory/'+id)
+        .subscribe((result: any) => {
+            console.log('products in choosed category ', result);
+            this.products = result;
+            this.products$.next(result)
+          },
+          (error) => {
+            console.log(error.status);
+            // reject([]);
+            // get the status as error.status
+          });
+    })
   }
 
 

@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, Renderer2} from '@angular/core';
 import {CartProducts, CartService} from "../services/cart.service";
 import {ProductService} from "../services/product.service";
 
@@ -8,12 +8,14 @@ import {ProductService} from "../services/product.service";
   styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
+
   productCart: CartProducts[] = [];
   productForCart = {} as CartProducts
-  totalCost:number=0;
+  totalCost: number = 0;
+  private cartCount: number;
 
   constructor(@Inject('BASE_URL') private baseUrl: string, private cart: CartService,
-              private product: ProductService) {
+              private product: ProductService, private renderer:Renderer2) {
 
     const promise = this.cart;
     promise.GetCartFromServer(this.baseUrl).then((serverCart) => {
@@ -30,7 +32,7 @@ export class CartComponent implements OnInit {
           this.productForCart.quantity = element.quantity;
           this.productForCart.imgsrc = this.baseUrl + 'api/product/image/' + element.productId;
           this.productForCart.id = element.productId;
-          this.totalCost+=result.cost;
+          this.totalCost += result.cost;
         });
         await this.productCart.push(this.productForCart);
         this.productForCart = {} as CartProducts;
@@ -38,18 +40,24 @@ export class CartComponent implements OnInit {
 
 
     })
+
     console.log('product cart for view: ', this.productCart)
 
   }
 
   ngOnInit() {
-
+    this.cartCount=this.productCart.length;
+    this.cart.subject$.subscribe(x=> {this.cartCount=x})
+    this.cart.counterOfItemsInCart();
   }
 
-  RemoveItemFromCart(id:number) {
+  RemoveItemFromCart(id: number) {
 
-    this.cart.removeFromCart(id, this.baseUrl).then(res=>{
-
+    this.cart.removeFromCart(id, this.baseUrl).then(res => {
+      const parent = this.renderer.createElement('div');
+      const child = document.getElementById(id.toString())
+      this.renderer.appendChild(parent, child);
+      this.renderer.removeChild(parent, child);
     })
 
   }

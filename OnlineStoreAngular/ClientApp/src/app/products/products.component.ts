@@ -12,16 +12,19 @@ import {observable} from "rxjs";
 })
 export class ProductsComponent implements OnInit {
 
-  isAuth: boolean;
+isAuth:boolean
   constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService,
               private product: ProductService, private cart:CartService, private router: Router) {
-    this.isAuth=this.Auth.logIn();
+this.isAuth=this.Auth.logIn();
+
     //this.getAllProducts()
   }
 products:Product[]=[]
   ngOnInit() {
+  this.product.products$.subscribe(x=>{
+    this.products=x
+  })
     this.getAllProducts();
-
 
   }
   isLoad:boolean=true;
@@ -30,7 +33,6 @@ products:Product[]=[]
     request.getProducts(this.baseUrl).then((result) => {
       this.products=result;
       this.isLoad=false;
-     // this.imgPath=this.baseUrl + 'api/product/image/'+this.id.toString()
     });
   }
 
@@ -46,4 +48,6 @@ products:Product[]=[]
 
 
   }
+
+
 }

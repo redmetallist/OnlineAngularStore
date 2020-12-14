@@ -4,12 +4,12 @@
       <div class="col-md-9">
         <div class="ibox">
           <div class="ibox-title">
-            <span class="pull-right">(<strong>{{productCart.length}}</strong>) items</span>
+            <span class="pull-right">(<strong>{{cartCount}}</strong>) items</span>
             <h5>Items in your cart</h5>
           </div>
           <div *ngFor="let element of productCart">
 
-          <div class="ibox-content">
+          <div class="ibox-content" [id]="element.id">
             <div class="table-responsive">
               <table class="table shoping-cart-table">
                 <tbody>
@@ -30,12 +30,12 @@
 
                     <div class="m-t-sm">
 
-                      <a href="#" class="text-muted" (click)=RemoveItemFromCart(element.id)><i class="fa fa-trash"></i> Remove item</a>
+                      <button class="text-muted" (click)=RemoveItemFromCart(element.id)><i class="fa fa-trash"></i> Remove item</button>
                     </div>
                   </td>
 
                   <td width="65">
-                    <input type="text" class="form-control" placeholder="1">
+                    <input type="text" class="form-control" [placeholder]=element.quantity>
                   </td>
                   <td>
                     <h4>
@@ -55,7 +55,7 @@
 
           <div class="ibox-content">
             <button class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i> Checkout</button>
-            <button class="btn btn-white"><i class="fa fa-arrow-left"></i> Continue shopping</button>
+            <button class="btn btn-white" [routerLink]="['/']" ><i class="fa fa-arrow-left"></i> Continue shopping</button>
 
           </div>
         </div>

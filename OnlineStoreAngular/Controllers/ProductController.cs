@@ -149,5 +149,13 @@ namespace OnlineStoreAngular.Controllers
                 return StatusCode(500, $"Internal server error: {ex}");
             }
         }
+
+        [HttpGet("getProductInCategory/{id}")]
+        public IActionResult GetInCategory(int id)
+        {
+            return Json(db.Products.ToList().Where(x => x.CategoryId == id));
+            //return StatusCode(404, $"404.Not found");
+            ;
+        }
     }
 }

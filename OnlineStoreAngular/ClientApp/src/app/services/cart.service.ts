@@ -1,7 +1,6 @@
-import {Injectable, Input, Output} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {observable, Observable, Observer, Subject} from "rxjs";
-import {async} from "rxjs/internal/scheduler/async";
+import {Subject} from "rxjs";
 
 
 @Injectable({
@@ -30,7 +29,8 @@ export class CartService {
           localStorage.removeItem('localCart');
           localStorage['localCart'] = JSON.stringify(localCart);
           isOk = true;
-          this.subject$.next(localCart.length);
+          this.counterOfItemsInCart()
+          //this.subject$.next(localCart.length);
         },
         (error) => {
           console.log(error.status);
@@ -163,9 +163,9 @@ export class CartService {
             productsIds.push(counter)
           }
 
-        })
+        })}
         resolve(productsIds.length);
-      }
+
     })
   }
 
@@ -187,6 +187,18 @@ export class CartService {
     })
   }
 
+  public GetCartFromLocal():number[]{
+
+    if (localStorage.getItem('localCart') !== null) {
+     return  JSON.parse(localStorage["localCart"]);}
+  }
+
+  public isInCart(id:number): boolean{
+    if (localStorage.getItem('localCart') !== null)
+return this.GetCartFromLocal().includes(id)
+    else return false
+  }
+
   public removeFromCart(id: number, baseUrl: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {
       this.http.delete<number>(baseUrl + 'api/cart/removeFromCart/' + id)
@@ -195,7 +207,7 @@ export class CartService {
             let localStorageCartItems = JSON.parse(localStorage["localCart"])
             localStorageCartItems.forEach(val => {
               if (val != id) {
-                localStorageCartItems.push(val)
+                newLocalStorageCartItems.push(val)
               }
             })
             localStorage.removeItem('localCart');
@@ -216,9 +228,9 @@ export class CartService {
 
 }
 
-export interface CartIds {
-  id: number
-}
+// export interface CartIds {
+//   id: number
+// }
 
 export interface CartProducts {
   id: number

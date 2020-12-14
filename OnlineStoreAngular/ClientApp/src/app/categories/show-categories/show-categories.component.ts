@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Category, CategoryService} from "../../services/category.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {ProductService} from "../../services/product.service";
 
 @Component({
   selector: 'app-show-categories',
@@ -13,13 +14,13 @@ export class ShowCategoriesComponent implements OnInit {
 
   constructor(private http: HttpClient,
               @Inject('BASE_URL') private baseUrl: string,
-              private categoryService: CategoryService, private router: Router) {
-
-
+              private product: ProductService) {
   }
+
   form: FormGroup;
 
   AllCategories: Category [] = [];
+
   ngOnInit() {
 
     this.form = new FormGroup({
@@ -28,19 +29,19 @@ export class ShowCategoriesComponent implements OnInit {
     })
 
     this.getCategories();
-   // this.showAllCategories();
+    // this.showAllCategories();
   }
 
-  sortedCategories: Category[]= [];
+  sortedCategories: Category[] = [];
 
 
-  getCategories(){
-  //  this.loading = true;
+  getCategories() {
+    //  this.loading = true;
     this.http.get<Category []>(this.baseUrl + 'api/categories')
       .subscribe(categories => {
         console.log(categories);
         this.AllCategories = categories;
-       // this.loading = false;
+        // this.loading = false;
         this.iSortNodes();
         this.showAllCategories();
       });
@@ -54,63 +55,50 @@ export class ShowCategoriesComponent implements OnInit {
 
   }
 
-  iSortNodes()
-  {
-    this.sortedCategories=[];
-    for(let element of this.AllCategories.filter(x=> x.parentCategory==null))
-    {
+  iSortNodes() {
+    this.sortedCategories = [];
+    for (let element of this.AllCategories.filter(x => x.parentCategory == null)) {
       this.sortedCategories.push(element);
       this.iSortChildrenRecursive(element)
     }
     console.log(this.sortedCategories)
   }
 
-  iSortChildrenRecursive(node:Category){
-    for(let child of this.AllCategories.filter(x=> x.parentCategory===node.id))
-    {
+  iSortChildrenRecursive(node: Category) {
+    for (let child of this.AllCategories.filter(x => x.parentCategory === node.id)) {
       this.sortedCategories.push(child)
 
-      if(this.AllCategories.filter(x=> x.parentCategory===child.id).length>0)
+      if (this.AllCategories.filter(x => x.parentCategory === child.id).length > 0)
         this.iSortChildrenRecursive(child)
 
     }
   }
 
-  showAllCategories()
-  {
-    let initial=document.getElementById('initial');
-   // console.log('sorted', this.sortedCategories)
-    for(let element of this.sortedCategories)
-    {
+  showAllCategories() {
+    for (let element of this.sortedCategories) {
       let parent;
-      if(element.parentCategory==null)
-      {
+      if (element.parentCategory == null) {
 
-       let elem = '<li id="element'+ element.id+'" > ' +
+        let elem = '<li id="element' + element.id + '" > ' +
           element.title
         document.querySelector("#initial").insertAdjacentHTML('beforeend', elem);
-        document.querySelector("#element"+element.id ).addEventListener('click', this.choosedCategory);
-      }
-      else {
-       parent = document.getElementById('element'+element.parentCategory)
-       // console.log(parent)
-        //console.log(document.getElementById('element'+element.parentCategory.toString()).nodeName)
-        if(document.getElementById('element'+element.parentCategory.toString()).nodeName=='LI')
-        {
-        //  console.log(document.getElementById('element'+element.parentCategory.toString()).nodeName)
+        document.querySelector("#element" + element.id).addEventListener('click', this.choosedCategory);
+      } else {
+        parent = document.getElementById('element' + element.parentCategory)
+        if (document.getElementById('element' + element.parentCategory.toString()).nodeName == 'LI') {
+          //  console.log(document.getElementById('element'+element.parentCategory.toString()).nodeName)
 
-            let elem = ' <ul class="submenu"><li id="element'+ element.id+'" >' +
-          element.title +'</li>'
-          document.querySelector("#element"+element.parentCategory).insertAdjacentHTML('beforeend', elem);
-          document.querySelector("#element"+element.parentCategory).addEventListener('click', this.choosedCategory);
+          let elem = ' <ul class="submenu"><li id="element' + element.id + '" >' +
+            element.title + '</li>'
+          document.querySelector("#element" + element.parentCategory).insertAdjacentHTML('beforeend', elem);
+          document.querySelector("#element" + element.parentCategory).addEventListener('click', this.choosedCategory);
+        } else {
+
+          let elem = '<li id="element' + element.id + '"  >' +
+            element.title + '</li>'
+          document.querySelector("#element" + element.parentCategory).insertAdjacentHTML('beforeend', elem);
+          document.querySelector("#element" + element.parentCategory).addEventListener('click', this.choosedCategory);
         }
-      else {
-
-        let elem = '<li id="element'+ element.id+'"  >' +
-          element.title +'</li>'
-        document.querySelector("#element"+element.parentCategory).insertAdjacentHTML('beforeend', elem);
-          document.querySelector("#element"+element.parentCategory ).addEventListener('click', this.choosedCategory);
-      }
 
       }
 
@@ -118,18 +106,19 @@ export class ShowCategoriesComponent implements OnInit {
   }
 
 
-  choosedCategory(event){
+  choosedCategory(event) {
     console.log(event)
     let target = event.target || event.currentTarget;
-   let idAttr = target.attributes.id;
-   // console.log('choosed category ',idAttr)
-   // console.log( JSON.stringify(idAttr.nodeValue))
-    let str = idAttr.nodeValue.toString().substr(7,idAttr.nodeValue.length-6);
-    //console.log(str)
+    let idAttr = target.attributes.id;
+    // console.log('choosed category ',idAttr)
+    // console.log( JSON.stringify(idAttr.nodeValue))
+    let str = idAttr.nodeValue.toString().substr(7, idAttr.nodeValue.length - 6);
+    console.log(str)
     //this.router.navigate[''];
 
-  }
+    this.product.getProductInCategory(this.baseUrl, str)
 
+  }
 
 
 }
