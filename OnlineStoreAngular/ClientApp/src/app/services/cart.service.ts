@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Subject} from "rxjs";
+import {AuthService} from "./auth.service";
 
 
 @Injectable({
@@ -9,7 +10,7 @@ import {Subject} from "rxjs";
 export class CartService {
   private result: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private auth: AuthService) {
   }
 
   public subject$ = new Subject<number>();
@@ -23,20 +24,27 @@ export class CartService {
     console.log('from add to cart')
     localCart.push(id);
     console.log(typeof id, id)
-    this.http.post<number>(baseUrl + 'api/cart/addToCart', id)
-      .subscribe((result: any) => {
+    if(this.auth.logIn()) {
+      this.http.post<number>(baseUrl + 'api/cart/addToCart', id)
+        .subscribe((result: any) => {
 
-          localStorage.removeItem('localCart');
-          localStorage['localCart'] = JSON.stringify(localCart);
-          isOk = true;
-          this.counterOfItemsInCart()
-          //this.subject$.next(localCart.length);
-        },
-        (error) => {
-          console.log(error.status);
-          isOk = false;
-          // get the status as error.status
-        });
+            localStorage.removeItem('localCart');
+            localStorage['localCart'] = JSON.stringify(localCart);
+            isOk = true;
+            this.counterOfItemsInCart()
+            //this.subject$.next(localCart.length);
+
+          },
+          (error) => {
+            console.log(error.status);
+            isOk = false;
+            // get the status as error.status
+          });
+    }
+    else {
+      localStorage.removeItem('localCart');
+      localStorage['localCart'] = JSON.stringify(localCart);
+    }
 
     //  }
     return isOk;
@@ -95,7 +103,7 @@ export class CartService {
 
               new Promise((resolve) => {
                 resolve(SyncWithServer())
-              }).then(() => resolve(SyncWithLocal()))
+              }).then(() => resolve(SyncWithLocal.bind(this)()))
 
 
             } else {
@@ -201,36 +209,47 @@ return this.GetCartFromLocal().includes(id)
 
   public removeFromCart(id: number, baseUrl: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {
+      if(this.auth.logIn()){
       this.http.delete<number>(baseUrl + 'api/cart/removeFromCart/' + id)
         .subscribe((result: any) => {
-            let newLocalStorageCartItems = [];
-            let localStorageCartItems = JSON.parse(localStorage["localCart"])
-            localStorageCartItems.forEach(val => {
-              if (val != id) {
-                newLocalStorageCartItems.push(val)
-              }
-            })
-            localStorage.removeItem('localCart');
-            if (newLocalStorageCartItems.length > 0)
-              localStorage['localCart'] = JSON.stringify(newLocalStorageCartItems);
+         this.RemoveFromLocalCart(id);
             this.counterOfItemsInCart();
             resolve(true)
           },
           (error) => {
             console.log(error.status);
+
             resolve(false);
             // get the status as error.status
           });
+      }
+      else {
+        this.RemoveFromLocalCart(id)
+        this.counterOfItemsInCart();
+        resolve(true);
 
+      }
     })
+  }
+
+  public RemoveFromLocalCart(id:number){
+    let newLocalStorageCartItems = [];
+    let localStorageCartItems = JSON.parse(localStorage["localCart"])
+    localStorageCartItems.forEach(val => {
+      if (val != id) {
+        newLocalStorageCartItems.push(val)
+      }
+    })
+    localStorage.removeItem('localCart');
+    if (newLocalStorageCartItems.length > 0)
+      localStorage['localCart'] = JSON.stringify(newLocalStorageCartItems);
+
   }
 
 
 }
 
-// export interface CartIds {
-//   id: number
-// }
+
 
 export interface CartProducts {
   id: number

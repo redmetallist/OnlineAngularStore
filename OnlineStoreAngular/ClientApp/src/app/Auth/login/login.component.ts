@@ -36,14 +36,20 @@ export class LoginComponent {
         email: this.email
       }
 
-      const request = this.auth;
-      request.login(user, this.baseUrl).then((result) => {
+     this.auth.login(user, this.baseUrl).then((result) => {
         if (result) {
           this.user.isAuth = true;
           this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
             this.Cart.SyncCartWithServer(this.baseUrl);
             location.reload();
+
           });
+          if(this.auth.fromCheckout){
+            this.router.navigateByUrl('checkout', {skipLocationChange: false}).then(() => {
+              this.Cart.SyncCartWithServer(this.baseUrl);
+              location.reload();
+            });
+          }
         }
       });
 

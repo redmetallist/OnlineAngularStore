@@ -1,84 +1,113 @@
-<div class="container">
+<div class="container" *ngIf="cartCount>0 else empty">
 
-    <div class="row">
-      <div class="col-md-9">
-        <div class="ibox">
-          <div class="ibox-title">
-            <span class="pull-right">(<strong>{{cartCount}}</strong>) items</span>
-            <h5>Items in your cart</h5>
-          </div>
+  <div class="row">
+    <div class="col-md-9">
+      <div class="ibox">
+        <div class="ibox-title">
+          <span class="pull-right">(<strong>{{cartCount}}</strong>) items</span>
+          <h5>Items in your cart</h5>
+        </div>
+        <div class="cart">
           <div *ngFor="let element of productCart">
 
-          <div class="ibox-content" [id]="element.id">
-            <div class="table-responsive">
-              <table class="table shoping-cart-table">
-                <tbody>
-                <tr>
-                  <td width="100">
-                    <img [src]=element.imgsrc alt="">
-                  </td>
-                  <td class="desc">
-                    <h3>
-                      <a href="#" class="text-navy">
-                        {{element.title}}
-                      </a>
-                    </h3>
-                    <p class="small">
-                    {{element.description}}
-                    </p>
+            <div class="ibox-content" [id]="element.id">
+
+              <div class="table-responsive">
+                <table class="table shoping-cart-table">
+                  <tbody>
+                  <tr>
+                    <td width="100">
+                      <img [src]=element.imgsrc alt="">
+                    </td>
+                    <td class="desc">
+                      <h3>
+                        <a href="#" class="text-navy">
+                          {{element.title}}
+                        </a>
+                      </h3>
+                      <p class="small">
+                        {{element.description}}
+                      </p>
 
 
-                    <div class="m-t-sm">
+                      <div class="m-t-sm">
 
-                      <button class="text-muted" (click)=RemoveItemFromCart(element.id)><i class="fa fa-trash"></i> Remove item</button>
-                    </div>
-                  </td>
+                        <button class="text-muted" type="button" (click)=RemoveItemFromCart(element.id)><i
+                          class="fa fa-trash"></i>
+                          Remove item
+                        </button>
+                      </div>
+                    </td>
 
-                  <td width="65">
-                    <input type="text" class="form-control" [placeholder]=element.quantity>
-                  </td>
-                  <td>
-                    <h4>
-                      ${{element.cost}}
-                    </h4>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
+                    <td width="165">
+                      <input min="1" max="10" class="quantity" value="1" type="number" class="form-control"
+                             [(ngModel)]="element.quantity" (ngModelChange)="changeQuantity($event, element.id)">
+                    </td>
+                    <td>
+                      <h4>
+                        ${{element.cost}}
+                      </h4>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
             </div>
 
-          </div>
-
-          </div>
-
-
-
-          <div class="ibox-content">
-            <button class="btn btn-primary pull-right"><i class="fa fa fa-shopping-cart"></i> Checkout</button>
-            <button class="btn btn-white" [routerLink]="['/']" ><i class="fa fa-arrow-left"></i> Continue shopping</button>
 
           </div>
         </div>
 
+
+        <div class="ibox-content">
+          <ng-container *ngIf="auth.logIn() else toAuth">
+            <button class="btn btn-primary pull-right" [routerLink]="['/checkout']" > <i class="fa fa fa-shopping-cart"></i>
+            Checkout
+          </button>
+          </ng-container>
+
+          <button class="btn btn-white" [routerLink]="['/']"><i class="fa fa-arrow-left"></i> Continue shopping</button>
+
+        </div>
+        <ng-template #toAuth>
+          <button class="btn btn-primary pull-right" (click)="checkout()" [routerLink]="['/login']" ><i class="fa fa fa-shopping-cart"></i>
+            Checkout
+          </button>
+        </ng-template>
       </div>
-      <div class="col-md-3">
-        <div class="ibox">
-          <div class="ibox-title">
-            <h5>Cart Summary</h5>
-          </div>
-          <div class="ibox-content">
+
+    </div>
+    <div class="col-md-3">
+      <div class="ibox">
+        <div class="ibox-title">
+          <h5>Cart Summary</h5>
+        </div>
+        <div class="ibox-content">
                     <span>
                         Total
                     </span>
-            <h2 class="font-bold">
-              ${{totalCost}}
-            </h2>
-          </div>
+          <h2 class="font-bold">
+            ${{totalCost}}
+          </h2>
         </div>
-
-
-
-
       </div>
+
+
     </div>
   </div>
+</div>
+
+<ng-template #empty>
+  <div class="space-3--lg">
+    <div class="text-center">
+      <div class="mb-5">
+            <span class="u-icon u-icon--secondary u-icon--xl rounded-circle mb-4">
+              <span class="fa fa-shopping-bag u-icon__inner"></span>
+            </span>
+        <h1 class="h2">Your cart is currently empty</h1>
+      </div>
+      <a class="btn btn-primary btn-wide" [routerLink]="['/']">Start Shopping</a>
+    </div>
+  </div>
+</ng-template>

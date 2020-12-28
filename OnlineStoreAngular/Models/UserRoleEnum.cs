@@ -8,7 +8,6 @@ namespace OnlineStoreAngular.Models
     public enum UserRole
     {
         Admin = 1,
-        User,
-        Seller
+        User
     }
 }

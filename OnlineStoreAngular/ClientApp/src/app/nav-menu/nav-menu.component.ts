@@ -3,6 +3,7 @@ import {UserService} from "../services/user.service";
 import {AuthService} from "../services/auth.service";
 import {CartService} from "../services/cart.service";
 import {Observable} from "rxjs";
+import {ProductService} from "../services/product.service";
 
 @Component({
   selector: 'app-nav-menu',
@@ -16,15 +17,20 @@ export class NavMenuComponent implements OnInit{
    role:string=''
   cartCount: number;
 
-constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService, private Cart:CartService) {
+constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService, private Cart:CartService, private Products:ProductService) {
 this.isAuth=this.Auth.logIn();
 this.role=this.Auth.getRole();
 console.log('is auth?',this.isAuth);
 console.log('your role is ',this.role);
-
+if(this.isAuth) {
   this.Cart.SyncCartWithServer(this.baseUrl).then((serverCart) => {
-
   })
+}
+else {
+  this.Cart.counterOfItemsInCart()
+}
+
+
 
 
 }
@@ -35,4 +41,7 @@ console.log('your role is ',this.role);
   }
 
 
+  ReloadMainPage() {
+    this.Products.getProducts(this.baseUrl)
+  }
 }

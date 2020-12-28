@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OnlineStoreAngular.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -23,8 +24,6 @@ namespace OnlineStoreAngular.Controllers
         public IActionResult GetImage(int id)
         {
             string path = Directory.GetCurrentDirectory() + @"\Resources\Images\" + id;
-
-            string str = Directory.GetCurrentDirectory();
 
             if (Directory.Exists(path))
             {
@@ -51,15 +50,19 @@ namespace OnlineStoreAngular.Controllers
         {
             string path = Directory.GetCurrentDirectory() + @"\Resources\Images";
 
-            string str = Directory.GetCurrentDirectory();
-
-            if (System.IO.Directory.Exists(path))
+            if (Directory.Exists(path))
             {
                 try
                 {
                     Product pr = db.Products.FirstOrDefault(x => x.Id == id);
                     return Json(new Product
-                        {Id = pr.Id, Title = pr.Title, Description = pr.Description, CategoryId = pr.CategoryId, Cost = pr.Cost});
+                    {
+                        Id = pr.Id,
+                        Title = pr.Title,
+                        Description = pr.Description,
+                        CategoryId = pr.CategoryId,
+                        Cost = pr.Cost
+                    });
                 }
                 catch
                 {
@@ -70,22 +73,18 @@ namespace OnlineStoreAngular.Controllers
             }
 
             return StatusCode(404, $"404.Not found");
-            ;
         }
-
 
         [HttpGet("getAll")]
         public IActionResult GetAllProducts()
         {
             string path = Directory.GetCurrentDirectory() + @"\Resources\Images";
 
-            string str = Directory.GetCurrentDirectory();
-
-            if (System.IO.Directory.Exists(path))
+            if (Directory.Exists(path))
             {
                 try
                 {
-                    var pr = db.Products.ToList<Product>();
+                    var pr = db.Products.ToList();
                     db.Dispose();
                     return Json(pr);
                 }
@@ -100,7 +99,6 @@ namespace OnlineStoreAngular.Controllers
             return StatusCode(404, $"404.Not found");
             ;
         }
-
 
         [Authorize(Roles = "Admin")]
         [HttpGet("create")]
@@ -153,9 +151,23 @@ namespace OnlineStoreAngular.Controllers
         [HttpGet("getProductInCategory/{id}")]
         public IActionResult GetInCategory(int id)
         {
-            return Json(db.Products.ToList().Where(x => x.CategoryId == id));
-            //return StatusCode(404, $"404.Not found");
-            ;
+            var result = new List<Product>();
+            result.AddRange(db.Products.ToList().Where(x => x.CategoryId == id));
+            GetProductFromChild(id, ref result);
+            return Json(result);
+        }
+
+        private void GetProductFromChild(int nodeId, ref List<Product> resultList)
+        {
+            foreach (var category in db.Categories.ToList().Where(x => x.ParentCategory == nodeId))
+            {
+                if (category.ParentCategory != null)
+                {
+                    GetProductFromChild(category.Id, ref resultList);
+                }
+
+                resultList.AddRange(db.Products.ToList().Where(x => x.CategoryId == category.Id));
+            }
         }
     }
 }

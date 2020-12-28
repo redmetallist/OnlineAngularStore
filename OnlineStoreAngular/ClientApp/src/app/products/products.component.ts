@@ -45,8 +45,6 @@ products:Product[]=[]
     this.cart.addToCart(id,this.baseUrl)
     this.cart.counterOfItemsInCart();
 
-
-
   }
 
 

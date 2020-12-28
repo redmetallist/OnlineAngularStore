@@ -10,6 +10,7 @@ import jwt_decode from 'jwt-decode';
 export class AuthService {
 
   private result: string;
+  fromCheckout=false;
 
   constructor(private http: HttpClient,private router: Router) {
 

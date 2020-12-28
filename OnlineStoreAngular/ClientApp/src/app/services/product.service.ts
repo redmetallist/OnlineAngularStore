@@ -12,6 +12,8 @@ export class ProductService {
 
   }
 
+  public products$ = new Subject<Product[]>();
+
   private result:Product;
 
   public loadProduct(id:number,baseUrl: string):Promise<Product>{
@@ -24,8 +26,6 @@ export class ProductService {
           },
           (error) => {
             console.log(error.status);
-           // reject([]);
-            // get the status as error.status
           });
     })
 
@@ -39,35 +39,30 @@ products:Product[]=[];
         .subscribe((result: any) => {
             console.log('result ', result);
             this.products = result;
-           // resolve(result);
             this.products$.next(result)
           },
           (error) => {
             console.log(error.status);
-           // reject([]);
-            // get the status as error.status
           });
     })
 
   }
 
   public getProductsById(baseUrl: string, id:number):Promise<Product>{
-    return new Promise(( resolve) => {
+    return new Promise((resolve) => {
       this.http.get<Product>(baseUrl + 'api/product/description/'+id)
         .subscribe((result: any) => {
-            console.log('result ', result);
             this.products = result;
-            resolve(result);
+            this.products$.next(result)
+          resolve(result)
           },
           (error) => {
             console.log(error.status);
-            // reject([]);
-            // get the status as error.status
           });
     })
 
   }
-  public products$ = new Subject<Product[]>();
+
 
   public getProductInCategory(baseUrl: string, id:number):Promise<Product[]>{
     return new Promise(() => {

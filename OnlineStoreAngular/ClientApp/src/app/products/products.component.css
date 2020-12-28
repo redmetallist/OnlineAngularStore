@@ -49,9 +49,13 @@ img {
 .product-img{
   text-align: center;
 }
+.text-center{
+  line-height: 100px;
 
-/*.product-img>img{*/
-/*  max-width: 80%;*/
-/*  height: auto;*/
-/*}*/
+}
+.text-center span{
+  font-size: 18px;
+}
+
+
 
