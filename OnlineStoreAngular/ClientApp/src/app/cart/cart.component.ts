@@ -102,11 +102,6 @@ export class CartComponent implements OnInit {
       this.cartCount = x
     })
     this.cart.counterOfItemsInCart();
-
-
-
-
-
   }
 
   RemoveItemFromCart(id: number) {

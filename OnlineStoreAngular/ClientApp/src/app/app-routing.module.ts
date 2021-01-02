@@ -7,6 +7,7 @@ import {ShowCategoriesComponent} from "./categories/show-categories/show-categor
 import {CartComponent} from "./cart/cart.component";
 import {ProductComponent} from "./product/product.component";
 import {CheckoutComponent} from "./checkout/checkout.component";
+import {WishListComponent} from "./wish-list/wish-list.component";
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'cart', component: CartComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'wishes', component: WishListComponent },
   // { path: 'addProduct', component: AddProductComponent },
 
 ];

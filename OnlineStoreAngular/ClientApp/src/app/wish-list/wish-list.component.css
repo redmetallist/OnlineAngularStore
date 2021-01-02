@@ -1,0 +1,10 @@
+.text-center{
+  line-height: 100px;
+
+}
+.text-center span{
+  font-size: 18px;
+}
+.image img{
+  max-height: 200px;
+}

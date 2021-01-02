@@ -3,7 +3,8 @@ import {AuthService} from "../services/auth.service";
 import {Product, ProductService} from "../services/product.service";
 import {CartService} from "../services/cart.service";
 import {Router} from "@angular/router";
-import {observable} from "rxjs";
+import {WishListService} from "../services/wish-list.service";
+import {IWishList} from "../services/wish-list.service";
 
 @Component({
   selector: 'app-products',
@@ -13,9 +14,14 @@ import {observable} from "rxjs";
 export class ProductsComponent implements OnInit {
 
 isAuth:boolean
+  wishList:IWishList[]=[]
   constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService,
-              private product: ProductService, private cart:CartService, private router: Router) {
+              private product: ProductService, private cart:CartService, private router: Router,
+              private wishListService:WishListService) {
 this.isAuth=this.Auth.logIn();
+this.wishListService.getWishFromServer(baseUrl).then(wishlist=>{
+  this.wishList=wishlist;
+})
 
     //this.getAllProducts()
   }
@@ -48,4 +54,24 @@ products:Product[]=[]
   }
 
 
+  addToWish(id: number) {
+    this.wishListService.addToWish(id,this.baseUrl).then(result=>{
+      if(result){
+        console.log('added!')
+        this.wishListService.getWishFromServer(this.baseUrl).then(wishlist=>{
+          this.wishList=wishlist;
+        })
+      }
+    })
+  }
+
+  isInWish(id: number):boolean {
+    if(this.wishList.length>0){
+      console.log('from isInWish')
+     return (this.wishList.filter(elem=>{
+       return elem.productId===id
+      })).length>0
+    }
+    return false;
+  }
 }

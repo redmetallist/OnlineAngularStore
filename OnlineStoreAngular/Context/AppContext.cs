@@ -8,7 +8,7 @@ namespace OnlineStoreAngular.Context
         public AppContext(DbContextOptions<AppContext> options)
            : base(options)
         {
-            // Database.EnsureDeleted();
+             //Database.EnsureDeleted();
                 Database.EnsureCreated();
             
         }
@@ -40,8 +40,8 @@ namespace OnlineStoreAngular.Context
                          new Category{Id=13, Title="Games", ParentCategory= 11}
                });
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Email = "admin@admin.onlinestore", Role = UserRole.Admin.ToString(), PasswordHash = "admin123" 
-                   });
+                new User { Id = 1, Email = "admin@admin.onlinestore", Role = UserRole.Admin.ToString(), PasswordHash = "admin123"},
+                new User { Id = 2, Email = "user@user.onlinestore", Role = UserRole.User.ToString(), PasswordHash = "user123" });
             modelBuilder.Entity<Product>().HasData(
                new Product{Id = 1, Title="Samsung Galaxy A71", Description="Some description", CategoryId=3, Cost = 500},
             new Product { Id = 2, Title = "Asus Zenfone2", Description = "ZE551ML", CategoryId= 4, Cost = 230},

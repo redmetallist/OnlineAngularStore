@@ -44,46 +44,35 @@ namespace OnlineStoreAngular.Controllers
         [HttpPost]
         public IActionResult Post(User user)
         {
-            var users = new User();
-            var searchedUser = db.Users.First(f => f.Email == user.Email);
-            if (searchedUser.PasswordHash == user.PasswordHash)
+            var searchedUser = db.Users.FirstOrDefault(f => f.Email == user.Email);
+            if (searchedUser != null)
             {
-                var userClaims = new List<Claim>()
+                if (searchedUser.PasswordHash == user.PasswordHash)
                 {
-                    //new Claim(ClaimTypes.Email, user.Email),
-                    // //new Claim(ClaimTypes.Hash, user.PasswordHash),
-                    //  new Claim(ClaimTypes.Role, Role(user)),
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, Role(user))
-                };
-                ClaimsIdentity claimsIdentity =
-                    new ClaimsIdentity(userClaims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                        ClaimsIdentity.DefaultRoleClaimType);
+                    var userClaims = new List<Claim>()
+                    {
+                        new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, Role(user))
+                    };
+                    ClaimsIdentity claimsIdentity = new ClaimsIdentity(userClaims, "Token",
+                        ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
+                    var now = DateTime.UtcNow;
+                    // создаем JWT-токен
+                    var jwt = new JwtSecurityToken(issuer: AuthOptions.ISSUER, audience: AuthOptions.AUDIENCE,
+                        notBefore: now, claims: userClaims,
+                        expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
+                            SecurityAlgorithms.HmacSha256));
+                    var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-                var now = DateTime.UtcNow;
-                // создаем JWT-токен
-                var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
-                    notBefore: now,
-                    claims: userClaims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
-                        SecurityAlgorithms.HmacSha256));
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+                    var response = new {access_token = encodedJwt, username = user.Email};
 
-                var response = new
-                {
-                    access_token = encodedJwt,
-                    username = user.Email
-                };
-
-                return Json(response);
+                    return Json(response);
+                }
             }
 
             return BadRequest(new {errorText = "Invalid username or password."});
-
 
             //}
             //return new JsonResult( role);

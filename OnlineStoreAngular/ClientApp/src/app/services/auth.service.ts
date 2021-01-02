@@ -49,14 +49,15 @@ export class AuthService {
   }
 
   public  getRole():string {
-    let role = null
+    let role = ''
     if (localStorage.getItem('auth_token') !== null) {
 
     let decoded = jwt_decode(localStorage.getItem('auth_token'));
     role = JSON.stringify(
       decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
   }
-    return role
+    // @ts-ignore
+    return role.replaceAll('"', '')
   }
 
 }

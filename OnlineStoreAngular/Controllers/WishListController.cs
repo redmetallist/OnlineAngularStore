@@ -10,9 +10,11 @@ using OnlineStoreAngular.Models;
 
 namespace OnlineStoreAngular.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class WishListController : Controller
     {
-        private Context.AppContext db;
+        private readonly Context.AppContext db;
 
         public WishListController(Context.AppContext context)
         {
@@ -26,13 +28,13 @@ namespace OnlineStoreAngular.Controllers
             var username = User.Identity.Name;
             try
             {
-                if (db.Wishlist.FirstOrDefault(x => x.ProductId == id && x.User.Email == username) == null)
+                if (db.Wishlist.FirstOrDefault(x => x.ProductId == id && x.UserId == db.Users.First(z => z.Email == username).Id) == null)
 
                 {
                     if (db.Products.FirstOrDefault(x => x.Id == id) != null)
                     {
                         db.Wishlist.Add(
-                            new Wishlist() {User = db.Users.First(x => x.Email == username), ProductId = id});
+                            new Wishlist() {UserId = db.Users.First(x => x.Email == username).Id, ProductId = id});
                         db.SaveChanges();
                         return StatusCode(200);
                     }
@@ -49,13 +51,13 @@ namespace OnlineStoreAngular.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [HttpPost("removeFromWish")]
-        public IActionResult RemoveFromWish([FromBody] int id)
+        [HttpDelete("removeFromWish/{id}")]
+        public IActionResult RemoveFromWish(int id)
         {
             var username = User.Identity.Name;
             try
             {
-                var product = db.Wishlist.FirstOrDefault(x => x.ProductId == id && x.User.Email == username);
+                var product = db.Wishlist.FirstOrDefault(x => x.ProductId == id && x.UserId == db.Users.First(z => z.Email == username).Id);
                 if (product != null)
 
                 {
@@ -65,6 +67,22 @@ namespace OnlineStoreAngular.Controllers
                 }
 
                 return StatusCode(403, "Product not exist in wishlist");
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+        [Authorize(Roles = "User")]
+        [HttpGet("getWish")]
+        public IActionResult GetWish()
+        {
+            var username = User.Identity.Name;
+            try
+            {
+                return Json(db.Wishlist.ToList().Where(x=> x.UserId==db.Users.First(z=> z.Email==username).Id));
             }
             catch
             {

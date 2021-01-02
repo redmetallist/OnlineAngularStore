@@ -1,52 +1,64 @@
 <div class="container">
   <div class="row">
     <ng-container *ngIf="products.length>0; else noProducts">
-<ng-container *ngFor="let product of products">
-    <div class="col-4 col-md-4 col-lg-4" >
-      <div class="card">
-        <div *ngIf="isAuth" >
-        <div class="pr-3 row justify-content-end">
-          <div class="fa fa-heart-o like like-checked"></div>
-        </div>
-        </div>
-        <div class="product-img">
-        <img class="card-img-top" [src]="getImage(product.id)" alt="image"></div>
-        <div class="card-body">
-          <h4 class="card-title"><a [routerLink]="['/product','1']" title="View Product">{{product.title}}</a></h4>
-          <p class="card-text">{{product.description}}</p>
-          <div class="row">
-            <div class="col-md-6">
-              <p class="price">${{product.cost}}
-<!--                .<span class="sm-text">50</span>-->
-              </p>
+      <ng-container *ngFor="let product of products">
+        <div class="col-4 col-md-4 col-lg-4">
+          <div class="card">
+            <div *ngIf="isAuth">
+              <ng-container *ngIf="isInWish(product.id); else noInWish">
+                <div class="pr-3 row justify-content-end">
+                  <div class="fa fa-heart-o like like-checked"></div>
+                </div>
+              </ng-container>
+              <ng-template #noInWish>
+                <div class="pr-3 row justify-content-end">
+                  <div class="fa fa-heart-o like" (click)="addToWish(product.id)"></div>
+                </div>
+              </ng-template>
             </div>
-            <div class="col-md-6 ">
-              <div class="stars"  > <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>
+            <div class="product-img">
+              <img class="card-img-top" [src]="getImage(product.id)" alt="image"></div>
+            <div class="card-body">
+              <h4 class="card-title"><a [routerLink]="['/product', product.id]"
+                                        title="View Product">{{product.title}}</a></h4>
+              <p class="card-text">{{product.description}}</p>
+              <div class="row">
+                <div class="col-md-6">
+                  <p class="price">${{product.cost}}
+                    <!--                .<span class="sm-text">50</span>-->
+                  </p>
+                </div>
+                <div class="col-md-6 ">
+                  <div class="stars"><span class="fa fa-star star-active"></span> <span
+                    class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span
+                    class="fa fa-star-o"></span> <span class="fa fa-star-o"></span></div>
+                </div>
+              </div>
+
+              <div class="row">
+                <ng-container *ngIf="!this.cart.isInCart(product.id) ;else noInCart">
+                  <a href="#" class="to-cart btn btn-primary btn-block " (click)="addToCart(product)"><i
+                    class="fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</a>
+                </ng-container>
+
+              </div>
+              <ng-template #noInCart>
+
+                <a href="#" class="to-cart btn btn-success btn-block disabled"><i class="fa fa-check-circle"
+                                                                                  aria-hidden="true"></i> In cart</a>
+              </ng-template>
+
             </div>
           </div>
-
-            <div class="row" >
-              <ng-container *ngIf="!this.cart.isInCart(product.id) ;else noInCart">
-              <a  href="#" class="to-cart btn btn-primary btn-block " (click)="addToCart(product)"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</a>
-              </ng-container>
-
-            </div>
-          <ng-template #noInCart>
-
-            <a  href="#" class="to-cart btn btn-success btn-block disabled"><i class="fa fa-check-circle" aria-hidden="true"></i> In cart</a>
-          </ng-template>
-
         </div>
-      </div>
-    </div>
 
-</ng-container>
+      </ng-container>
 
 
     </ng-container>
 
     <ng-template #noProducts>
-      <div class="col-12 col-md-12 col-lg-12" >
+      <div class="col-12 col-md-12 col-lg-12">
         <div class="text-center">
           <div class="mb-5">
             <span>No products in current category</span>
@@ -56,123 +68,6 @@
 
     </ng-template>
 
-
-<!--       <div class="col-4 col-md-4 col-lg-4">-->
-<!--      <div class="card">-->
-<!--        <div class="pr-3 row justify-content-end">-->
-<!--          <div class="fa fa-heart-o like "></div>-->
-<!--        </div>-->
-<!--        <img class="card-img-top" src="https://i.pinimg.com/originals/61/e7/8b/61e78b08a8dd18779132812218a9f2a8.jpg" alt="Card image cap">-->
-<!--        <div class="card-body">-->
-<!--          <h4 class="card-title"><a [routerLink]="['/product']" title="View Product">Product title</a></h4>-->
-<!--          <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium exercitationem illum, molestiae praesentium sapiente suscipit!</p>-->
-<!--          <div class="row">-->
-<!--            <div class="col-md-6">-->
-<!--              <p class="price">$79.<span class="sm-text">50</span></p>-->
-<!--            </div>-->
-<!--            <div class="col-md-6 ">-->
-<!--              <div class="stars"> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div *ngIf="isAuth;else noAuth">-->
-<!--          <div class="row" >-->
-<!--            <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>-->
-<!--          </div>-->
-<!--          </div>-->
-<!--          <ng-template #noAuth>-->
-<!--            <a  href="#" class="to-cart btn btn-success btn-block disabled"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>-->
-<!--          </ng-template>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div><div class="col-4 col-md-4 col-lg-4">-->
-<!--    <div class="card">-->
-<!--      <div class="pr-3 row justify-content-end">-->
-<!--        <div class="fa fa-heart-o like like-checked"></div>-->
-<!--      </div>-->
-<!--      <img class="card-img-top" src="https://i.pinimg.com/originals/61/e7/8b/61e78b08a8dd18779132812218a9f2a8.jpg" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h4 class="card-title"><a [routerLink]="['/product']" title="View Product">Product title</a></h4>-->
-<!--        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium exercitationem illum, molestiae praesentium sapiente suscipit!</p>-->
-<!--        <div class="row">-->
-<!--          <div class="col-md-6">-->
-<!--            <p class="price">$79.<span class="sm-text">50</span></p>-->
-<!--          </div>-->
-<!--          <div class="col-md-6 ">-->
-<!--            <div class="stars"> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--          <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div><div class="col-4 col-md-4 col-lg-4">-->
-<!--    <div class="card">-->
-<!--      <div class="pr-3 row justify-content-end">-->
-<!--        <div class="fa fa-heart-o like like-checked"></div>-->
-<!--      </div>-->
-<!--      <img class="card-img-top" src="https://i.pinimg.com/originals/61/e7/8b/61e78b08a8dd18779132812218a9f2a8.jpg" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h4 class="card-title"><a [routerLink]="['/product']" title="View Product">Product title</a></h4>-->
-<!--        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium exercitationem illum, molestiae praesentium sapiente suscipit!</p>-->
-<!--        <div class="row">-->
-<!--          <div class="col-md-6">-->
-<!--            <p class="price">$79.<span class="sm-text">50</span></p>-->
-<!--          </div>-->
-<!--          <div class="col-md-6 ">-->
-<!--            <div class="stars"> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--          <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div><div class="col-4 col-md-4 col-lg-4">-->
-<!--    <div class="card">-->
-<!--      <div class="pr-3 row justify-content-end">-->
-<!--        <div class="fa fa-heart-o like like-checked"></div>-->
-<!--      </div>-->
-<!--      <img class="card-img-top" src="https://i.pinimg.com/originals/61/e7/8b/61e78b08a8dd18779132812218a9f2a8.jpg" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h4 class="card-title"><a [routerLink]="['/product']" title="View Product">Product title</a></h4>-->
-<!--        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium exercitationem illum, molestiae praesentium sapiente suscipit!</p>-->
-<!--        <div class="row">-->
-<!--          <div class="col-md-6">-->
-<!--            <p class="price">$79.<span class="sm-text">50</span></p>-->
-<!--          </div>-->
-<!--          <div class="col-md-6 ">-->
-<!--            <div class="stars"> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--          <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div><div class="col-4 col-md-4 col-lg-4">-->
-<!--    <div class="card">-->
-<!--      <div class="pr-3 row justify-content-end">-->
-<!--        <div class="fa fa-heart-o like like-checked"></div>-->
-<!--      </div>-->
-<!--      <img class="card-img-top" src="https://i.pinimg.com/originals/61/e7/8b/61e78b08a8dd18779132812218a9f2a8.jpg" alt="Card image cap">-->
-<!--      <div class="card-body">-->
-<!--        <h4 class="card-title"><a [routerLink]="['/product']" title="View Product">Product title</a></h4>-->
-<!--        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium exercitationem illum, molestiae praesentium sapiente suscipit!</p>-->
-<!--        <div class="row">-->
-<!--          <div class="col-md-6">-->
-<!--            <p class="price">$79.<span class="sm-text">50</span></p>-->
-<!--          </div>-->
-<!--          <div class="col-md-6 ">-->
-<!--            <div class="stars"> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star star-active"></span> <span class="fa fa-star-o"></span> <span class="fa fa-star-o"></span> </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--          <a  href="#" class="to-cart btn btn-success btn-block"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Add to cart</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
 
   </div>
 </div>

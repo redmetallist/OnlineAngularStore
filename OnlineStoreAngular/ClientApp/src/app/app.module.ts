@@ -19,6 +19,7 @@ import {UserService} from "./services/user.service";
 import {AuthInterceptor} from "./services/auth-interceptor.service";
 import {AdminRoleComponent} from "./roles/admin-role/admin-role.component";
 import {CheckoutComponent} from "./checkout/checkout.component";
+import {WishListComponent} from "./wish-list/wish-list.component";
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import {CheckoutComponent} from "./checkout/checkout.component";
     UserRoleComponent,
     CartComponent,
     AdminRoleComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    WishListComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
