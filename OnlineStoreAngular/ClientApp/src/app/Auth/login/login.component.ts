@@ -40,14 +40,19 @@ export class LoginComponent {
         if (result) {
           this.user.isAuth = true;
           this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
-            this.Cart.SyncCartWithServer(this.baseUrl);
-            location.reload();
+            this.Cart.SyncCartWithServer(this.baseUrl).then(x=>{
+              if(x)
+              { location.reload();}
+            });
+
 
           });
           if(this.auth.fromCheckout){
             this.router.navigateByUrl('checkout', {skipLocationChange: false}).then(() => {
-              this.Cart.SyncCartWithServer(this.baseUrl);
-              location.reload();
+              this.Cart.SyncCartWithServer(this.baseUrl).then(x=>{
+                if(x)
+                { location.reload();}
+              });
             });
           }
         }

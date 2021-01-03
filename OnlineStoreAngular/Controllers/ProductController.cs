@@ -134,13 +134,11 @@ namespace OnlineStoreAngular.Controllers
 
                         return Ok(new {dbPath});
                     }
-                    else
-                        return BadRequest();
+
+                    return BadRequest();
                 }
-                else
-                {
-                    return StatusCode(423, $"ObjectExist. Cannot create");
-                }
+
+                return StatusCode(423, $"ObjectExist. Cannot create");
             }
             catch (Exception ex)
             {

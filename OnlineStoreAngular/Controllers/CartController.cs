@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStoreAngular.Models;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace OnlineStoreAngular.Controllers
 {
@@ -19,13 +20,10 @@ namespace OnlineStoreAngular.Controllers
             db = context;
         }
 
-        
-
         //[Authorize(Roles = "User")]
         //[HttpGet("addToCart/{id}")]
         //public IActionResult GetProductDescription(int id)
         //{
-
 
         //    return StatusCode(404, $"404.Not found"); ;
 
@@ -72,7 +70,6 @@ namespace OnlineStoreAngular.Controllers
                     var user = db.Users.First(x => x.Email == username.ToString());
                     var cart = db.Cart.ToList().Where(x => x.UserId == user.Id);
 
-
                     return new JsonResult(cart);
                 }
                 catch
@@ -94,9 +91,9 @@ namespace OnlineStoreAngular.Controllers
                 try
                 {
                     var user = db.Users.First(x => x.Email == username.ToString());
-                    var cart = db.Cart.First(x => x.UserId == user.Id && x.ProductId==id);
+                    var cart = db.Cart.First(x => x.UserId == user.Id && x.ProductId == id);
                     db.Cart.Remove(cart);
-                   
+
                     db.SaveChanges();
 
                     return StatusCode(200);
@@ -110,8 +107,43 @@ namespace OnlineStoreAngular.Controllers
             return StatusCode(401);
         }
 
+        [Authorize]
+        [HttpPost("changeQuantity/{id}/{quantity}")]
+        public IActionResult ChangeQuantity(int id, int quantity)
+        {
+            if (quantity > 0)
+            {
+                var username = User.Identity.Name;
 
+                try
+                {
+                    var user = db.Users.First(x => x.Email == username);
+                    var product = db.Products.First(x => x.Id == id);
+                    var exist = db.Cart.FirstOrDefault(x => x.UserId == user.Id && x.ProductId == product.Id);
 
+                    if (exist != null)
+                    {
+                        if (quantity == exist.Quantity)
+                        {
+                            return StatusCode(200);
+                        }
 
+                        exist.Quantity = quantity;
+                        db.SaveChanges();
+                        return StatusCode(200);
+                    }
+
+                    db.Cart.Add(new Cart {UserId = user.Id, ProductId = product.Id, Quantity = quantity});
+                    db.SaveChanges();
+                    return StatusCode(200);
+                }
+                catch
+                {
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+            return StatusCode(403, "Bad request");
+        }
     }
 }

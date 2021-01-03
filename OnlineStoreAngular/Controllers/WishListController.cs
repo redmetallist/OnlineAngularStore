@@ -28,13 +28,16 @@ namespace OnlineStoreAngular.Controllers
             var username = User.Identity.Name;
             try
             {
-                if (db.Wishlist.FirstOrDefault(x => x.ProductId == id && x.UserId == db.Users.First(z => z.Email == username).Id) == null)
+                if (db.Wishlist.FirstOrDefault(x =>
+                    x.ProductId == id && x.UserId == db.Users.First(z => z.Email == username).Id) == null)
 
                 {
                     if (db.Products.FirstOrDefault(x => x.Id == id) != null)
                     {
-                        db.Wishlist.Add(
-                            new Wishlist() {UserId = db.Users.First(x => x.Email == username).Id, ProductId = id});
+                        db.Wishlist.Add(new Wishlist()
+                        {
+                            UserId = db.Users.First(x => x.Email == username).Id, ProductId = id
+                        });
                         db.SaveChanges();
                         return StatusCode(200);
                     }
@@ -57,7 +60,8 @@ namespace OnlineStoreAngular.Controllers
             var username = User.Identity.Name;
             try
             {
-                var product = db.Wishlist.FirstOrDefault(x => x.ProductId == id && x.UserId == db.Users.First(z => z.Email == username).Id);
+                var product = db.Wishlist.FirstOrDefault(x =>
+                    x.ProductId == id && x.UserId == db.Users.First(z => z.Email == username).Id);
                 if (product != null)
 
                 {
@@ -74,7 +78,6 @@ namespace OnlineStoreAngular.Controllers
             }
         }
 
-
         [Authorize(Roles = "User")]
         [HttpGet("getWish")]
         public IActionResult GetWish()
@@ -82,7 +85,7 @@ namespace OnlineStoreAngular.Controllers
             var username = User.Identity.Name;
             try
             {
-                return Json(db.Wishlist.ToList().Where(x=> x.UserId==db.Users.First(z=> z.Email==username).Id));
+                return Json(db.Wishlist.ToList().Where(x => x.UserId == db.Users.First(z => z.Email == username).Id));
             }
             catch
             {

@@ -22,26 +22,28 @@ export class CartService {
       localCart = JSON.parse(localStorage["localCart"]);
     }
     console.log('from add to cart')
-    localCart.push(id);
+    if (!localCart.includes(x => {
+      return x == id
+    })) {
+      localStorage.removeItem('localCart');
+      localCart.push(id);
+      localStorage['localCart'] = JSON.stringify(localCart);
+    }
+    //localCart.push(id);
     console.log(typeof id, id)
-    if(this.auth.logIn()) {
+    if (this.auth.logIn()) {
       this.http.post<number>(baseUrl + 'api/cart/addToCart', id)
         .subscribe((result: any) => {
 
-            localStorage.removeItem('localCart');
-            localStorage['localCart'] = JSON.stringify(localCart);
             isOk = true;
             this.counterOfItemsInCart()
-            //this.subject$.next(localCart.length);
-
-          },
+           },
           (error) => {
             console.log(error.status);
             isOk = false;
             // get the status as error.status
           });
-    }
-    else {
+    } else {
       localStorage.removeItem('localCart');
       localStorage['localCart'] = JSON.stringify(localCart);
     }
@@ -57,81 +59,89 @@ export class CartService {
     return new Promise((resolve, reject) => {
 
         this.GetCartFromServer(baseUrl).then((cartFromServer) => {
-          console.log('cart from server', cartFromServer)
+            console.log('cart from server', cartFromServer)
 
-          if (cartFromServer.length > 0) {
-            console.log('cart from server more than 0')
-            if (localStorage.getItem('localCart') !== null) {
-              console.log('local storage not empty')
-              localStorageCartItems = JSON.parse(localStorage["localCart"])
+            if (cartFromServer.length > 0) {
+              console.log('cart from server more than 0')
+              if (localStorage.getItem('localCart') !== null) {
+                console.log('local storage not empty')
+                localStorageCartItems = JSON.parse(localStorage["localCart"])
 
-              let productIdsFromServer = [];
+                let productIdsFromServer = [];
 
 
-              function SyncWithServer(): Promise<any> {
-                return new Promise((resolve) => {
-                  cartFromServer.forEach(async serverCartElement => {
-                    await productIdsFromServer.push(serverCartElement.productId);
-                    if (localStorageCartItems.includes(serverCartElement.productId)) {
-                      console.log('from server iteration')
-                    } else {
-                      console.log('from server iteration')
-                      await localStorageCartItems.push(serverCartElement.productId)
-                    }
+                function SyncWithServer(): Promise<any> {
+                  return new Promise((resolve) => {
+                    cartFromServer.forEach(async serverCartElement => {
+                      await productIdsFromServer.push(serverCartElement.productId);
+                      if (localStorageCartItems.includes(serverCartElement.productId)) {
+                        console.log('from server iteration')
+                      } else {
+                        console.log('from server iteration')
+                        await localStorageCartItems.push(serverCartElement.productId)
+                      }
 
+                    })
+                    resolve()
                   })
-                  resolve()
-                })
 
-              }
+                }
 
-              function SyncWithLocal(): Promise<any> {
-                return new Promise((resolve) => {
-                  localStorageCartItems.forEach(async localStorageCartElement => {
+                function SyncWithLocal(): Promise<any> {
+                  return new Promise((resolve) => {
+                    localStorageCartItems.forEach(async localStorageCartElement => {
 
 
-                    if (productIdsFromServer.includes(localStorageCartElement)) {
-                      console.log('from client iteration')
-                    } else {
-                      console.log('from client iteration')
-                      await this.addToCart(localStorageCartElement, baseUrl)
-                    }
+                      if (productIdsFromServer.includes(localStorageCartElement)) {
+                        console.log('from client iteration')
+                      } else {
+                        console.log('from client iteration')
+                        await this.addToCart(localStorageCartElement, baseUrl)
+                      }
+                    })
+                    resolve();
                   })
-                  resolve();
+                }
+
+                new Promise((resolve) => {
+                  resolve(SyncWithServer())
+                }).then(() => resolve(SyncWithLocal.bind(this)()))
+
+
+              } else {
+                console.log('local storage is empty', 'cart from server!!', cartFromServer)
+                localStorageCartItems = [];
+                cartFromServer.forEach(async serverCartElement => {
+
+                  await localStorageCartItems.push(serverCartElement.productId)
                 })
               }
-
-              new Promise((resolve) => {
-                resolve(SyncWithServer())
-              }).then(() => resolve(SyncWithLocal.bind(this)()))
-
-
             } else {
-              console.log('local storage is empty', 'cart from server!!', cartFromServer)
-              localStorageCartItems = [];
-              cartFromServer.forEach(async serverCartElement => {
+              if (localStorage.getItem('localCart') !== null) {
+                let localStorageCartItems = JSON.parse(localStorage["localCart"]);
+                let uniqueCart = localStorageCartItems.filter(function (item, pos) {
+                  return localStorageCartItems.indexOf(item) == pos;
+                })
+                uniqueCart.forEach(async product => {
+console.log('length',localStorageCartItems.filter(x => {
+  return x == product
+}).length)
+                  await this.addToCart(product, baseUrl)
+                  await this.setQuantity(product, localStorageCartItems.filter(x => {
+                    return x == product
+                  }).length, baseUrl)
 
-                await localStorageCartItems.push(serverCartElement.productId)
-              })
+                })
+              }
             }
-          } else {
-            if (localStorage.getItem('localCart') !== null) {
-              let localStorageCartItems = JSON.parse(localStorage["localCart"]);
-              localStorageCartItems.forEach(async product => {
-
-                await this.addToCart(product, baseUrl)
-
-              })
-            }
-          }
-        },
-          err=>{
-          console.log('call from error')
-          this.counterOfItemsInCart();
+          },
+          err => {
+            console.log('call from error')
+            this.counterOfItemsInCart();
           }
         ).then(() => {
 
-            if (localStorageCartItems.length>0) {
+            if (localStorageCartItems.length > 0) {
               if (localStorage.getItem('localCart') !== null) {
                 localStorage.removeItem('localCart');
               }
@@ -171,8 +181,9 @@ export class CartService {
             productsIds.push(counter)
           }
 
-        })}
-        resolve(productsIds.length);
+        })
+      }
+      resolve(productsIds.length);
 
     })
   }
@@ -182,48 +193,48 @@ export class CartService {
       let cartItems;
       this.http.get<any[]>(baseUrl + 'api/cart/getCart')
         .subscribe(cart => {
-          cartItems = cart;
-          resolve(cartItems);
-        },
-        (error) => {
-        //  console.log(error.status);
-       //   throw error.status
-          reject()
+            cartItems = cart;
+            resolve(cartItems);
+          },
+          (error) => {
+            //  console.log(error.status);
+            //   throw error.status
+            reject()
 
-          // get the status as error.status
-        })
+            // get the status as error.status
+          })
     })
   }
 
-  public GetCartFromLocal():number[]{
+  public GetCartFromLocal(): number[] {
 
     if (localStorage.getItem('localCart') !== null) {
-     return  JSON.parse(localStorage["localCart"]);}
+      return JSON.parse(localStorage["localCart"]);
+    }
   }
 
-  public isInCart(id:number): boolean{
+  public isInCart(id: number): boolean {
     if (localStorage.getItem('localCart') !== null)
-return this.GetCartFromLocal().includes(id)
+      return this.GetCartFromLocal().includes(id)
     else return false
   }
 
   public removeFromCart(id: number, baseUrl: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      if(this.auth.logIn()){
-      this.http.delete<number>(baseUrl + 'api/cart/removeFromCart/' + id)
-        .subscribe((result: any) => {
-         this.RemoveFromLocalCart(id);
-            this.counterOfItemsInCart();
-            resolve(true)
-          },
-          (error) => {
-            console.log(error.status);
+      if (this.auth.logIn()) {
+        this.http.delete<number>(baseUrl + 'api/cart/removeFromCart/' + id)
+          .subscribe((result: any) => {
+              this.RemoveFromLocalCart(id);
+              this.counterOfItemsInCart();
+              resolve(true)
+            },
+            (error) => {
+              console.log(error.status);
 
-            resolve(false);
-            // get the status as error.status
-          });
-      }
-      else {
+              resolve(false);
+              // get the status as error.status
+            });
+      } else {
         this.RemoveFromLocalCart(id)
         this.counterOfItemsInCart();
         resolve(true);
@@ -232,7 +243,7 @@ return this.GetCartFromLocal().includes(id)
     })
   }
 
-  public RemoveFromLocalCart(id:number){
+  public RemoveFromLocalCart(id: number) {
     let newLocalStorageCartItems = [];
     let localStorageCartItems = JSON.parse(localStorage["localCart"])
     localStorageCartItems.forEach(val => {
@@ -246,9 +257,39 @@ return this.GetCartFromLocal().includes(id)
 
   }
 
+  public setQuantity(id: number, quantity: number, baseUrl: string): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+      let newlocalStorageCartItems = [];
+      let localStorageCartItems = JSON.parse(localStorage["localCart"])
+      newlocalStorageCartItems = localStorageCartItems.filter(value => {
+        return value === id
+      })
+      if (newlocalStorageCartItems.length != quantity) {
+        localStorageCartItems = localStorageCartItems.filter(value => {
+          return value != id
+        })
+        for (let i = 0; i < quantity; i++) {
+          localStorageCartItems.push(id)
+        }
+        console.log('id', id, 'quantity', quantity)
+        this.http.post(baseUrl + 'api/cart/changeQuantity/' + id + '/' + quantity, [])
+          .subscribe((result: any) => {
+              resolve(true)
+            },
+            (error) => {
+              console.log(error.status);
+              resolve(false)
+            });
+
+        localStorage.removeItem('localCart');
+        if (localStorageCartItems.length > 0)
+          localStorage['localCart'] = JSON.stringify(localStorageCartItems);
+      }
+    })
+  }
+
 
 }
-
 
 
 export interface CartProducts {

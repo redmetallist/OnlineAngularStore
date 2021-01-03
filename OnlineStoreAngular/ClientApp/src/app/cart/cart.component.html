@@ -1,5 +1,4 @@
 <div class="container" *ngIf="cartCount>0 else empty">
-
   <div class="row">
     <div class="col-md-9">
       <div class="ibox">
@@ -28,10 +27,7 @@
                       <p class="small">
                         {{element.description}}
                       </p>
-
-
                       <div class="m-t-sm">
-
                         <button class="text-muted" type="button" (click)=RemoveItemFromCart(element.id)><i
                           class="fa fa-trash"></i>
                           Remove item
@@ -52,23 +48,16 @@
                   </tbody>
                 </table>
               </div>
-
             </div>
-
-
           </div>
         </div>
-
-
         <div class="ibox-content">
           <ng-container *ngIf="auth.logIn() else toAuth">
             <button class="btn btn-primary pull-right" [routerLink]="['/checkout']" > <i class="fa fa fa-shopping-cart"></i>
             Checkout
           </button>
           </ng-container>
-
           <button class="btn btn-white" [routerLink]="['/']"><i class="fa fa-arrow-left"></i> Continue shopping</button>
-
         </div>
         <ng-template #toAuth>
           <button class="btn btn-primary pull-right" (click)="checkout()" [routerLink]="['/login']" ><i class="fa fa fa-shopping-cart"></i>
@@ -76,7 +65,6 @@
           </button>
         </ng-template>
       </div>
-
     </div>
     <div class="col-md-3">
       <div class="ibox">
@@ -92,8 +80,6 @@
           </h2>
         </div>
       </div>
-
-
     </div>
   </div>
 </div>
