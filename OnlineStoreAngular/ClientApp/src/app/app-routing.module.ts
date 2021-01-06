@@ -8,6 +8,8 @@ import {CartComponent} from "./cart/cart.component";
 import {ProductComponent} from "./product/product.component";
 import {CheckoutComponent} from "./checkout/checkout.component";
 import {WishListComponent} from "./wish-list/wish-list.component";
+import {UserOrdersComponent} from "./orders/user-orders/user-orders.component";
+import {AdminOrdersComponent} from "./orders/admin-orders/admin-orders.component";
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -17,9 +19,12 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'cart', component: CartComponent },
-  { path: 'checkout', component: CheckoutComponent },
+ // { path: 'checkout', component: CheckoutComponent },
   { path: 'wishes', component: WishListComponent },
   // { path: 'addProduct', component: AddProductComponent },
+  { path: 'orders', component: UserOrdersComponent },
+  { path: 'orderList', component: AdminOrdersComponent }
+
 
 ];
 

@@ -8,7 +8,6 @@ import {AuthService} from "./auth.service";
   providedIn: 'root'
 })
 export class CartService {
-  private result: string;
 
   constructor(private http: HttpClient, private auth: AuthService) {
   }
@@ -286,6 +285,10 @@ console.log('length',localStorageCartItems.filter(x => {
           localStorage['localCart'] = JSON.stringify(localStorageCartItems);
       }
     })
+  }
+
+  public removeLocalCart(){
+    localStorage.removeItem('localCart');
   }
 
 

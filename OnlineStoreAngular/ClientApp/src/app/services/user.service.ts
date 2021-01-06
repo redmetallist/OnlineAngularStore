@@ -18,6 +18,6 @@ export interface User {
   id?: number
   email:string
   passwordHash: string
-  userData: UserData
+  userData?: UserData
 
 }

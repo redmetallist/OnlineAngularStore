@@ -13,6 +13,7 @@ export class CartComponent implements OnInit {
   productCart: CartProducts[] = [];
   productForCart = {} as CartProducts
   totalCost: number = 0;
+  doCheckout=false;
   private cartCount: number;
 
 
@@ -147,4 +148,7 @@ export class CartComponent implements OnInit {
     this.auth.fromCheckout = true;
   }
 
+  doCheckOut() {
+    this.doCheckout=true;
+  }
 }

@@ -51,13 +51,17 @@
             </div>
           </div>
         </div>
+
         <div class="ibox-content">
+          <ng-container *ngIf="doCheckout"> <app-checkout></app-checkout> </ng-container>
           <ng-container *ngIf="auth.logIn() else toAuth">
-            <button class="btn btn-primary pull-right" [routerLink]="['/checkout']" > <i class="fa fa fa-shopping-cart"></i>
+            <ng-container *ngIf="!doCheckout">
+            <button class="btn btn-primary pull-right" [routerLink]="['/checkout']" (click)="doCheckOut()" > <i class="fa fa fa-shopping-cart"></i>
             Checkout
           </button>
-          </ng-container>
           <button class="btn btn-white" [routerLink]="['/']"><i class="fa fa-arrow-left"></i> Continue shopping</button>
+            </ng-container>
+          </ng-container>
         </div>
         <ng-template #toAuth>
           <button class="btn btn-primary pull-right" (click)="checkout()" [routerLink]="['/login']" ><i class="fa fa fa-shopping-cart"></i>
@@ -82,7 +86,10 @@
       </div>
     </div>
   </div>
+
 </div>
+
+
 
 <ng-template #empty>
   <div class="space-3--lg">

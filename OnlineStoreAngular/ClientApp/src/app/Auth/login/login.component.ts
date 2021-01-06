@@ -32,7 +32,7 @@ export class LoginComponent {
   postData() {
     if (this.form.valid) {
       const user: User = {
-        passwordHash: this.passHash, userData: {firstName: null, lastName: null},
+        passwordHash: this.passHash,
         email: this.email
       }
 

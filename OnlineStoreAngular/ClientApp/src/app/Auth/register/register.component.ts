@@ -20,24 +20,19 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.form = new FormGroup({
       email: new FormControl('', [Validators.email, Validators.required]),
-      password: new FormControl(null, [Validators.required, Validators.minLength(6)]),
-      lastName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-      firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
-
+      password: new FormControl(null, [Validators.required, Validators.minLength(6)])
     })
   }
 
   email = ''
   passHash=''
-  fName=''
-  lName=''
 result= '' ;
  // submit() {
   postData(){
     if (this.form.valid) {
 
 const newUser: User = {
-  passwordHash: this.passHash, userData: { firstName:this.fName, lastName:this.lName},
+  passwordHash: this.passHash,
   email : this.email
 }
       this.http.post<User>(this.baseUrl + 'api/register', newUser)

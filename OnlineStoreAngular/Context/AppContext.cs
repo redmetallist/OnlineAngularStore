@@ -19,8 +19,8 @@ namespace OnlineStoreAngular.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<Cart> Cart { get; set; }
         public DbSet<Wishlist> Wishlist { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Order> ActiveOrders { get; set; }
+        public DbSet<ActiveOrder> ActiveOrders { get; set; }
+        public DbSet<ArchiveOrder> ArchiveOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
