@@ -64,26 +64,43 @@ namespace OnlineStoreAngular.Controllers
                             IsComplete = false,
                             OrderDateTime = DateTime.Now,
                             ProductId = product.ProductId,
-                            Quantity = product.Quantity
+                            Quantity = product.Quantity,
+                            Cost = db.Products.First(x => x.Id == product.ProductId).Cost
                         };
                         db.ActiveOrders.Add(order);
                         db.Cart.Remove(product);
                         db.SaveChanges();
                     }
 
-                    userData = new UserData()
+                    var databaseUserData = db.UsersData.FirstOrDefault(x => x.UserId == user.Id);
+                    if (databaseUserData != null)
                     {
-                        UserId = user.Id,
-                        Address = userData.Address,
-                        City = userData.City,
-                        Country = userData.Country,
-                        FirstName = userData.FirstName,
-                        LastName = userData.LastName,
-                        MobileNumber = userData.MobileNumber,
-                        Zipcode = userData.Zipcode
-                    };
-                    db.UsersData.Add(userData);
-                    db.SaveChanges();
+                        databaseUserData.Address = userData.Address;
+                        databaseUserData.City = userData.City;
+                        databaseUserData.Country = userData.Country;
+                        databaseUserData.FirstName = userData.FirstName;
+                        databaseUserData.LastName = userData.LastName;
+                        databaseUserData.MobileNumber = userData.MobileNumber;
+                        databaseUserData.Zipcode = userData.Zipcode;
+                        db.UsersData.Update(databaseUserData);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        userData = new UserData()
+                        {
+                            UserId = user.Id,
+                            Address = userData.Address,
+                            City = userData.City,
+                            Country = userData.Country,
+                            FirstName = userData.FirstName,
+                            LastName = userData.LastName,
+                            MobileNumber = userData.MobileNumber,
+                            Zipcode = userData.Zipcode
+                        };
+                        db.UsersData.Add(userData);
+                        db.SaveChanges();
+                    }
 
                     return StatusCode(200);
                 }
@@ -103,6 +120,54 @@ namespace OnlineStoreAngular.Controllers
             try
             {
                 return new JsonResult(db.ActiveOrders.ToList());
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("getUserInfoFromOrder")]
+        public IActionResult GetUserInfoFromOrder([FromBody]int userId)
+        {
+            try
+            {
+                return new JsonResult(db.UsersData.FirstOrDefault(x=> x.UserId==userId));
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("completeOrder")]
+        public IActionResult CompleteOrder([FromBody] int orderId)
+        {
+            try
+            {
+                var order = db.ActiveOrders.Where(x => x.OrderId == orderId).ToList();
+                List<ArchiveOrder> archiveOrder=new List<ArchiveOrder>();
+                foreach (var product in order)
+                {
+                    var prod = new ArchiveOrder()
+                    {
+                        UserId = product.UserId,
+                        OrderId = product.OrderId,
+                        IsComplete = true,
+                        OrderDateTime = product.OrderDateTime,
+                        ProductId = product.ProductId,
+                        Quantity = product.Quantity,
+                        Cost = product.Cost
+                    };
+                    archiveOrder.Add(prod);
+                    db.ActiveOrders.Remove(product);
+                }
+                
+                db.ArchiveOrders.AddRange(archiveOrder);
+                db.SaveChanges();
+                return  StatusCode(200);
             }
             catch
             {

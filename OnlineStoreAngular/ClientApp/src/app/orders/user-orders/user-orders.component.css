@@ -1,0 +1,10 @@
+.uncompleted{
+  background: rgba(241, 169, 160, 0.5);
+}
+div{
+  margin: 0;
+}
+.completed{
+  background: rgba(162, 222, 208, 0.5);
+}
+

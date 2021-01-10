@@ -18,7 +18,7 @@ export class NavMenuComponent implements OnInit{
   cartCount: number;
 
 constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService, private Cart:CartService, private Products:ProductService) {
-this.isAuth=this.Auth.logIn();
+//this.isAuth=this.Auth.logIn();
 this.role=this.Auth.getRole();
 console.log('is auth?',this.isAuth);
 console.log('your role is ',this.role);
@@ -39,10 +39,11 @@ else {
   ngOnInit(): void {
   this.cartCount=0;
     this.Cart.subject$.subscribe(x=> {this.cartCount=x})
+    this.Auth.isAuthSubj$.subscribe(x=>{this.isAuth=x})
   }
 
 
-  ReloadMainPage() {
+  goToMain() {
     this.Products.getProducts(this.baseUrl)
   }
 }

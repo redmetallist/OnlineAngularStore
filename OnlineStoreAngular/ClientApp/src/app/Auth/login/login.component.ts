@@ -36,23 +36,18 @@ export class LoginComponent {
         email: this.email
       }
 
-     this.auth.login(user, this.baseUrl).then((result) => {
+      this.auth.login(user, this.baseUrl).then((result) => {
         if (result) {
+          this.auth.isAuthSubj$.next(true)
           this.user.isAuth = true;
           this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
-            this.Cart.SyncCartWithServer(this.baseUrl).then(x=>{
-              if(x)
-              { location.reload();}
-            });
+            this.Cart.SyncCartWithServer(this.baseUrl).then();
 
 
           });
-          if(this.auth.fromCheckout){
+          if (this.auth.fromCheckout) {
             this.router.navigateByUrl('checkout', {skipLocationChange: false}).then(() => {
-              this.Cart.SyncCartWithServer(this.baseUrl).then(x=>{
-                if(x)
-                { location.reload();}
-              });
+              this.Cart.SyncCartWithServer(this.baseUrl).then();
             });
           }
         }

@@ -24,7 +24,60 @@ export class CheckoutService {
     })
   }
 
+  public getUserOrders(baseUrl:string):Promise<Order []>{
+    return new Promise<Order[]>(resolve => {
+      if (this.auth.logIn()) {
+        this.http.get<Order>(baseUrl + 'api/order/getUserOrders')
+          .subscribe((result: any) => {
+              resolve(result)
+            },
+            (error) => {
+              resolve([])
+            });
+      }
+    })
+  }
+  public getActiveOrders(baseUrl:string):Promise<Order []>{
+    return new Promise<Order[]>(resolve => {
+      if (this.auth.logIn()) {
+        this.http.get<Order>(baseUrl + 'api/order/getActiveOrders')
+          .subscribe((result: any) => {
+              resolve(result)
+            },
+            (error) => {
+              resolve([])
+            });
+      }
+    })
+  }
+
+  public completeOrder(baseUrl:string, id:number):Promise<boolean>{
+    return new Promise<boolean>(resolve => {
+      if (this.auth.logIn()) {
+        this.http.post<number>(baseUrl + 'api/order/completeOrder', id)
+          .subscribe((result: any) => {
+              resolve(true)
+            },
+            (error) => {
+              resolve(false)
+            });
+      }
+    })
+  }
 
 
+
+
+}
+
+export interface Order {
+  id?:number
+    userId:number,
+  productId:number,
+  orderId:number,
+  quantity:number,
+  isComplete:boolean,
+  orderDateTime:Date,
+  cost:number
 
 }
