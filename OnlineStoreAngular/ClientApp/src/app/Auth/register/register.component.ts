@@ -3,6 +3,8 @@ import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router"
 import {User} from "../../services/user.service";
+import {AuthService} from "../../services/auth.service";
+import {CartService} from "../../services/cart.service";
 
 @Component({
   selector: 'app-register',
@@ -12,7 +14,7 @@ import {User} from "../../services/user.service";
 export class RegisterComponent implements OnInit {
 
   constructor(private http: HttpClient,
-              @Inject('BASE_URL') private baseUrl: string, private router: Router) {
+              @Inject('BASE_URL') private baseUrl: string, private router: Router, private auth: AuthService, private Cart:CartService) {
   }
 
   form: FormGroup;
@@ -25,27 +27,24 @@ export class RegisterComponent implements OnInit {
   }
 
   email = ''
-  passHash=''
-result= '' ;
- // submit() {
-  postData(){
+  passHash = ''
+
+  // submit() {
+  postData() {
     if (this.form.valid) {
-
-const newUser: User = {
-  passwordHash: this.passHash,
-  email : this.email
-}
-      this.http.post<User>(this.baseUrl + 'api/register', newUser)
-        .subscribe(result => {
-          console.log('result ', result);
-          this.result=result.toString()
-          if(this.result === "true")
-          {
-            this.router.navigate(['/login'])
-          }
-        });
-
-
+      const newUser: User = {
+        passwordHash: this.passHash,
+        email: this.email
+      }
+      this.auth.register(this.baseUrl, newUser).then(result => {
+        if(result) {
+          console.log('from true result')
+          this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
+            console.log('from navigate')
+            this.Cart.SyncCartWithServer(this.baseUrl).then();
+          });
+        }
+      })
     } else
       console.log('invalid!')
 

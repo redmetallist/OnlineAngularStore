@@ -21,21 +21,19 @@ export class AuthService {
 
   public login(user: User, baseUrl: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let isOk = false;
-      this.http.post<User>(baseUrl + 'api/login', user)
+      this.http.post<User>(baseUrl + 'api/login/login', user)
         .subscribe((result: any) => {
-            console.log('result ', result);
+          //  console.log('result ', result);
             this.result = result.toString()
             localStorage.setItem('auth_token', result.access_token);
-            isOk = true;
-            resolve(isOk);
+this.isAuthSubj$.next(true);
+            resolve(true);
             //this.router.navigate([''])
           },
           (error) => {
-            console.log(error.status);
-            isOk = false;
-            reject(isOk);
-            // get the status as error.status
+            //console.log(error.status);
+            this.isAuthSubj$.next(false);
+            reject(false);
           });
     })
 
@@ -64,6 +62,24 @@ export class AuthService {
     }
     // @ts-ignore
     return role.replaceAll('"', '')
+  }
+
+  public register(baseUrl: string, user: User): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+      this.http.post<User>(baseUrl + 'api/login/register', user)
+        .subscribe(() => {
+          this.login(user, baseUrl).then(res => {
+            console.log('from register in login')
+            resolve(true)
+          }, (error) => {
+            console.log(error.status);
+            resolve(false);
+          })
+        }, (error) => {
+          console.log(error.status);//!!!!
+          resolve(false);
+        });
+    })
   }
 
 }

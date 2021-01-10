@@ -16,23 +16,9 @@ namespace OnlineStoreAngular.Controllers
     {
         private Context.AppContext db;
 
-        public LoginController(Context.AppContext context, ILogger<LoginController> logger)
+        public LoginController(Context.AppContext context)
         {
             db = context;
-            _logger = logger;
-        }
-
-        private readonly ILogger<LoginController> _logger;
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            if (ModelState.IsValid)
-            {
-                return Ok();
-            }
-
-            return BadRequest(ModelState);
         }
 
         private string Role(User user)
@@ -41,7 +27,7 @@ namespace OnlineStoreAngular.Controllers
             return searchedUser.Role;
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public IActionResult Post(User user)
         {
             var searchedUser = db.Users.FirstOrDefault(f => f.Email == user.Email);
@@ -73,9 +59,40 @@ namespace OnlineStoreAngular.Controllers
             }
 
             return BadRequest(new {errorText = "Invalid username or password."});
+        }
 
-            //}
-            //return new JsonResult( role);
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] User user)
+        {
+            if (user.Email != null && user.PasswordHash != null && user.PasswordHash.Length >= 6)
+            {
+                var isUniqueEmail = db.Users.FirstOrDefault(x => x.Email == user.Email);
+
+                if (isUniqueEmail == null)
+                {
+                    if (user.Email != null)
+                        try
+                        {
+                            db.Users.Add(new User()
+                            {
+                                Email = user.Email,
+                                PasswordHash = user.PasswordHash,
+                                Role = UserRole.User.ToString()
+                            });
+                            db.SaveChanges();
+                          //  return StatusCode(200, "New user successfully added");
+                           return Ok();
+                        }
+                        catch
+                        {
+                            return StatusCode(500);
+                        }
+                }
+
+                return StatusCode(400);
+            }
+
+            return StatusCode(400);
         }
     }
 }

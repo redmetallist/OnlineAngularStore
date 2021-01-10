@@ -38,12 +38,9 @@ export class LoginComponent {
 
       this.auth.login(user, this.baseUrl).then((result) => {
         if (result) {
-          this.auth.isAuthSubj$.next(true)
           this.user.isAuth = true;
           this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
             this.Cart.SyncCartWithServer(this.baseUrl).then();
-
-
           });
           if (this.auth.fromCheckout) {
             this.router.navigateByUrl('checkout', {skipLocationChange: false}).then(() => {
