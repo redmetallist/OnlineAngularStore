@@ -16,9 +16,6 @@
               >field email cant be empty </small>
               <small *ngIf="form.get('email').errors.email"
               >write correct data</small>
-              <small *ngIf="form.get('email').errors.restrictedEmail">Email {{form.get('email').value}}
-                forbidden</small>
-              <small *ngIf="form.get('email').errors.uniqEmail">Email {{form.get('email').value}} busy</small>
             </div>
           </div>
 

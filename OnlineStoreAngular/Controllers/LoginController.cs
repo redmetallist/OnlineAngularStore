@@ -58,11 +58,12 @@ namespace OnlineStoreAngular.Controllers
                 }
             }
 
-            return BadRequest(new {errorText = "Invalid username or password."});
+           // return BadRequest(new {errorText = "Invalid username or password."});
+           return StatusCode(400);
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] User user)
+        public ActionResult Register([FromBody] User user)
         {
             if (user.Email != null && user.PasswordHash != null && user.PasswordHash.Length >= 6)
             {
@@ -80,8 +81,8 @@ namespace OnlineStoreAngular.Controllers
                                 Role = UserRole.User.ToString()
                             });
                             db.SaveChanges();
-                          //  return StatusCode(200, "New user successfully added");
-                           return Ok();
+                           return StatusCode(200, "New user successfully added");
+                           //return Ok();
                         }
                         catch
                         {

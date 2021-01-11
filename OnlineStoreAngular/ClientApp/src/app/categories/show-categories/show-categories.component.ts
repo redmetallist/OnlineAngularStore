@@ -1,19 +1,22 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Category} from "../../services/category.service";
+import {Category, CategoryService} from "../../services/category.service";
 import {ProductService} from "../../services/product.service";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-show-categories',
   templateUrl: './show-categories.component.html',
   styleUrls: ['./show-categories.component.css']
 })
-export class ShowCategoriesComponent {
+export class ShowCategoriesComponent implements OnDestroy{
+    ngOnDestroy(): void {
+    this.categoryService.fromAddCategory=false;
+    }
 
 
-  constructor(private http: HttpClient,
-              @Inject('BASE_URL') private baseUrl: string,
-              private product: ProductService) {
+  constructor(@Inject('BASE_URL') private baseUrl: string,
+              private product: ProductService, private  authService:AuthService, private categoryService:CategoryService) {
     this.getCategories();
 
 
@@ -24,7 +27,7 @@ export class ShowCategoriesComponent {
 
 
   getCategories() {
-    this.http.get<Category []>(this.baseUrl + 'api/categories')
+    this.categoryService.getCategories(this.baseUrl)
       .subscribe(categories => {
         this.AllCategories = categories;
         this.iSortNodes();
@@ -96,7 +99,14 @@ export class ShowCategoriesComponent {
     console.log(str)
     //this.router.navigate[''];
 
-    this.product.getProductInCategory(this.baseUrl, str)
+    //this.product.getProductInCategory(this.baseUrl, str)
+    if(this.authService.logIn() && this.authService.getRole()==='Admin' && this.categoryService.fromAddCategory){
+      console.log('hello from admin')
+      this.categoryService.selectedCategory$.next(+str);
+    }
+    else{
+      this.product.getProductInCategory(this.baseUrl, str)
+    }
 
   }
 

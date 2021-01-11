@@ -22,6 +22,7 @@ import {CheckoutComponent} from "./checkout/checkout.component";
 import {WishListComponent} from "./wish-list/wish-list.component";
 import {UserOrdersComponent} from "./orders/user-orders/user-orders.component";
 import {AdminOrdersComponent} from "./orders/admin-orders/admin-orders.component";
+import {AddCategoryComponent} from "./categories/add-category/add-category.component";
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import {AdminOrdersComponent} from "./orders/admin-orders/admin-orders.component
     CheckoutComponent,
     WishListComponent,
     UserOrdersComponent,
-    AdminOrdersComponent
+    AdminOrdersComponent,
+    AddCategoryComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

@@ -66,14 +66,11 @@ this.isAuthSubj$.next(true);
 
   public register(baseUrl: string, user: User): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      this.http.post<User>(baseUrl + 'api/login/register', user)
+      this.http.post(baseUrl + 'api/login/register', user)
         .subscribe(() => {
           this.login(user, baseUrl).then(res => {
             console.log('from register in login')
             resolve(true)
-          }, (error) => {
-            console.log(error.status);
-            resolve(false);
           })
         }, (error) => {
           console.log(error.status);//!!!!

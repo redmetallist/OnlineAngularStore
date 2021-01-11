@@ -10,6 +10,7 @@ import {CheckoutComponent} from "./checkout/checkout.component";
 import {WishListComponent} from "./wish-list/wish-list.component";
 import {UserOrdersComponent} from "./orders/user-orders/user-orders.component";
 import {AdminOrdersComponent} from "./orders/admin-orders/admin-orders.component";
+import {AddCategoryComponent} from "./categories/add-category/add-category.component";
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -23,7 +24,8 @@ const routes: Routes = [
   { path: 'wishes', component: WishListComponent },
   // { path: 'addProduct', component: AddProductComponent },
   { path: 'orders', component: UserOrdersComponent },
-  { path: 'orderList', component: AdminOrdersComponent }
+  { path: 'orderList', component: AdminOrdersComponent },
+  { path: 'addCategory', component: AddCategoryComponent }
 
 
 ];

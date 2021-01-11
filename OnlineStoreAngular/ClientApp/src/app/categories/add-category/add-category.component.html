@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-md-4 col-lg-4 ">
+    <app-show-categories></app-show-categories>
+  </div>
+  <div class="col-md-8 col-lg-8 ">
+    <form [formGroup]="form"  class="border-0">
+      <div class="form-group">
+        <div></div>
+
+        <p>Write category name to input and then choose parent category from list on left side or add as root</p>
+        <input class="form-control" type="text" formControlName="categoryName" placeholder="name of category" [(ngModel)]="categoryName">
+
+        <div *ngIf="form.get('categoryName').invalid && form.get('categoryName').touched"
+          class="validation">
+          <small *ngIf="form.get('categoryName').errors.required"
+
+          >field categoryName cant be empty </small>
+          <small *ngIf="form.get('categoryName').errors?.minlength"
+          >min length is 3. write correct categoryName</small>
+        </div>
+
+
+
+        <p>parent id is {{parentCategory}}. parent category is {{parentCategoryName}} </p>
+        <small *ngIf="!isCanAdd">
+          <p> max nesting is 3. forbidden!</p>
+        </small>
+        <button class="btn btn-primary" [disabled]="form.invalid || form.pending" (click)="addCategory()">add as root</button>
+        <button class="btn btn-success" [disabled]="form.invalid || form.pending" (click)="addRootCategory()">add to chosen parent</button>
+
+      </div>
+    </form>
+
+  </div>
+</div>

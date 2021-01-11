@@ -20,15 +20,6 @@ namespace OnlineStoreAngular.Controllers
             db = context;
         }
 
-        //[Authorize(Roles = "User")]
-        //[HttpGet("addToCart/{id}")]
-        //public IActionResult GetProductDescription(int id)
-        //{
-
-        //    return StatusCode(404, $"404.Not found"); ;
-
-        //}
-
         [HttpPost("addToCart")]
         public IActionResult AddToCart([FromBody] int id)
         {
