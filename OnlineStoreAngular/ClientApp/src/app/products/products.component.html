@@ -5,16 +5,18 @@
         <div class="col-4 col-md-4 col-lg-4">
           <div class="card">
             <div *ngIf="isAuth">
-              <ng-container *ngIf="isInWish(product.id); else noInWish">
-                <div class="pr-3 row justify-content-end">
-                  <div class="fa fa-heart-o like like-checked"></div>
-                </div>
-              </ng-container>
-              <ng-template #noInWish>
-                <div class="pr-3 row justify-content-end">
-                  <div class="fa fa-heart-o like" (click)="addToWish(product.id)"></div>
-                </div>
-              </ng-template>
+              <div *ngIf="this.Auth.getRole()==='User'">
+                <ng-container *ngIf="isInWish(product.id); else noInWish">
+                  <div class="pr-3 row justify-content-end">
+                    <div class="fa fa-heart-o like like-checked"></div>
+                  </div>
+                </ng-container>
+                <ng-template #noInWish>
+                  <div class="pr-3 row justify-content-end">
+                    <div class="fa fa-heart-o like" (click)="addToWish(product.id)"></div>
+                  </div>
+                </ng-template>
+              </div>
             </div>
             <div class="product-img">
               <img class="card-img-top" [src]="getImage(product.id)" alt="image"></div>
@@ -40,10 +42,8 @@
                   <a href="#" class="to-cart btn btn-primary btn-block " (click)="addToCart(product)"><i
                     class="fa fa-shopping-cart" aria-hidden="true"></i> Add to cart</a>
                 </ng-container>
-
               </div>
               <ng-template #noInCart>
-
                 <a href="#" class="to-cart btn btn-success btn-block disabled"><i class="fa fa-check-circle"
                                                                                   aria-hidden="true"></i> In cart</a>
               </ng-template>

@@ -13,7 +13,7 @@ export class AddCategoryComponent implements OnInit {
   parentCategory: number = -1;
   parentCategoryName:string=''
   categories: Category [] = [];
-  categoryName: string;
+  categoryName: string='';
   form: FormGroup;
   isCanAdd=true;
 
@@ -54,10 +54,32 @@ export class AddCategoryComponent implements OnInit {
   }
 
   addCategory() {
-//to do in future
+    if(this.categoryName.length>2 && this.parentCategory!=-1){
+      let newCategory:Category={title: this.categoryName, parentCategory:this.parentCategory}
+      this.categoryService.addCategory(this.baseUrl, newCategory).then(res=>{
+        if(res){
+          alert('new category successfully added.please refresh the page')
+        }
+        else
+          alert('something wrong')
+      })
+    }
+    else alert('name of new category should be more than 2 characters and parent category should be chosen')
+
   }
 
   addRootCategory() {
+    if(this.categoryName.length>2){
+      let newCategory:Category={title: this.categoryName, parentCategory:null}
+      this.categoryService.addCategory(this.baseUrl, newCategory).then(res=>{
+        if(res){
+          alert('new category successfully added.please refresh the page')
+        }
+        else
+          alert('something wrong')
+      })
+    }
+    else alert('name of new category should be more than 2 characters')
 
   }
 

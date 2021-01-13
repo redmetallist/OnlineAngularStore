@@ -10,3 +10,9 @@ input.ng-invalid.ng-touched{
 input.ng-valid.ng-touched {
   border: 1px solid green;
 }
+input{
+  margin: 10px 0px;
+}
+.red{
+  color: red;
+}

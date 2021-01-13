@@ -13,64 +13,67 @@ import {IWishList} from "../services/wish-list.service";
 })
 export class ProductsComponent implements OnInit {
 
-isAuth:boolean
-  wishList:IWishList[]=[]
-  constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService,
-              private product: ProductService, private cart:CartService, private router: Router,
-              private wishListService:WishListService) {
-this.isAuth=this.Auth.logIn();
-this.wishListService.getWishFromServer(baseUrl).then(wishlist=>{
-  this.wishList=wishlist;
-})
+  isAuth: boolean
+  wishList: IWishList[] = []
 
-    //this.getAllProducts()
+  constructor(@Inject('BASE_URL') private baseUrl: string, private Auth: AuthService,
+              private product: ProductService, private cart: CartService, private router: Router,
+              private wishListService: WishListService) {
+    this.isAuth = this.Auth.logIn();
+    this.wishListService.getWishFromServer(baseUrl).then(wishlist => {
+      this.wishList = wishlist;
+    })
   }
-products:Product[]=[]
+
+  products: Product[] = []
+
   ngOnInit() {
-  this.product.products$.subscribe(x=>{
-    this.products=x
-  })
+    this.product.products$.subscribe(x => {
+      this.products = x
+    })
     this.getAllProducts();
 
   }
-  isLoad:boolean=true;
-  getAllProducts(){
+
+  isLoad: boolean = true;
+
+  getAllProducts() {
     const request = this.product;
     request.getProducts(this.baseUrl).then((result) => {
-      this.products=result;
-      this.isLoad=false;
+      this.products = result;
+      this.isLoad = false;
     });
   }
 
-  getImage(id:number):string {
-    return this.baseUrl + 'api/product/image/'+id.toString()
+  getImage(id: number): string {
+    return this.baseUrl + 'api/product/image/' + id.toString()
   }
 
-  addToCart(product:Product) {
-    let id:number=product.id;
-    this.cart.addToCart(id,this.baseUrl)
+  addToCart(product: Product) {
+    let id: number = product.id;
+    this.cart.addToCart(id, this.baseUrl)
     this.cart.counterOfItemsInCart();
 
   }
 
 
   addToWish(id: number) {
-    this.wishListService.addToWish(id,this.baseUrl).then(result=>{
-      if(result){
+    this.wishListService.addToWish(id, this.baseUrl).then(result => {
+      if (result) {
         console.log('added!')
-        this.wishListService.getWishFromServer(this.baseUrl).then(wishlist=>{
-          this.wishList=wishlist;
+        this.wishListService.getWishFromServer(this.baseUrl).then(wishlist => {
+          this.wishList = wishlist;
         })
       }
     })
   }
 
-  isInWish(id: number):boolean {
-    if(this.wishList.length>0){
+  isInWish(id: number): boolean {
+    if (this.wishList.length > 0) {
       console.log('from isInWish')
-     return (this.wishList.filter(elem=>{
-       return elem.productId===id
-      })).length>0
+      return (this.wishList.filter(elem => {
+        return elem.productId === id
+      })).length > 0
     }
     return false;
   }

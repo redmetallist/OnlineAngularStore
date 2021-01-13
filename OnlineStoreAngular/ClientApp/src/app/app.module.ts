@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
-import {RouterModule} from '@angular/router';
+import {ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot} from '@angular/router';
 
 import {AppComponent} from './app.component';
 import {NavMenuComponent} from './nav-menu/nav-menu.component';
@@ -23,6 +23,9 @@ import {WishListComponent} from "./wish-list/wish-list.component";
 import {UserOrdersComponent} from "./orders/user-orders/user-orders.component";
 import {AdminOrdersComponent} from "./orders/admin-orders/admin-orders.component";
 import {AddCategoryComponent} from "./categories/add-category/add-category.component";
+import {AppGuard} from "./app.guard";
+import {AddProductComponent} from "./add-product/add-product.component";
+
 
 
 @NgModule({
@@ -42,7 +45,8 @@ import {AddCategoryComponent} from "./categories/add-category/add-category.compo
     WishListComponent,
     UserOrdersComponent,
     AdminOrdersComponent,
-    AddCategoryComponent
+    AddCategoryComponent,
+    AddProductComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),
@@ -56,7 +60,7 @@ import {AddCategoryComponent} from "./categories/add-category/add-category.compo
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }],
+    }, AppGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {

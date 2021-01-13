@@ -49,12 +49,13 @@ namespace OnlineStoreAngular.Controllers
         public IActionResult GetProductDescription(int id)
         {
             string path = Directory.GetCurrentDirectory() + @"\Resources\Images";
+            Product pr = db.Products.FirstOrDefault(x => x.Id == id);
 
-            if (Directory.Exists(path))
+            if (Directory.Exists(path) && pr!=null)
             {
                 try
                 {
-                    Product pr = db.Products.FirstOrDefault(x => x.Id == id);
+                    
                     return Json(new Product
                     {
                         Id = pr.Id,
@@ -111,7 +112,7 @@ namespace OnlineStoreAngular.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("{id}"), DisableRequestSizeLimit]
+        [HttpPost("uploadImage/{id}"), DisableRequestSizeLimit]
         public IActionResult Upload(int id)
         {
             try
@@ -167,5 +168,11 @@ namespace OnlineStoreAngular.Controllers
                 resultList.AddRange(db.Products.ToList().Where(x => x.CategoryId == category.Id));
             }
         }
+
+
+
+
+
+
     }
 }
