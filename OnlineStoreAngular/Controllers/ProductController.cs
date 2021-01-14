@@ -112,8 +112,8 @@ namespace OnlineStoreAngular.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("uploadImage/{id}"), DisableRequestSizeLimit]
-        public IActionResult Upload(int id)
+        [HttpPost("uploadImage/{category}/{cost}/{description}/{id}/{title}"), DisableRequestSizeLimit]
+        public IActionResult Upload(int category, double cost, string description, int id, string title)
         {
             try
             {

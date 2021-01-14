@@ -50,6 +50,7 @@ export class AddCategoryComponent implements OnInit {
     this.authService.logIn();
     this.form = new FormGroup({
       categoryName: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      desc: new FormControl('', [Validators.required, Validators.minLength(10)]),
     })
   }
 

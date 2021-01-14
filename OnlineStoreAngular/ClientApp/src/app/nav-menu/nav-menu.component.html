@@ -33,7 +33,7 @@
 <!--                       style="height: 34px; " alt="avatar image">-->
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="navbarDropdownMenuLink-55">
-                  <div *ngIf="role==='User'; else maybeAdmin">
+                  <div *ngIf="this.Auth.getRole()==='User'; else maybeAdmin">
                     <app-user-role></app-user-role>
                   </div>
                 </div>

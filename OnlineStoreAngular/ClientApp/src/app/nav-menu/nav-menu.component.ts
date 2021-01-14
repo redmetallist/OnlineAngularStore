@@ -14,15 +14,14 @@ import {ProductService} from "../services/product.service";
 export class NavMenuComponent implements OnInit{
 
    isAuth: boolean = false;
-   role
   cartCount: number;
 
 constructor(@Inject('BASE_URL') private baseUrl: string, private Auth:AuthService, private Cart:CartService, private Products:ProductService) {
 //this.isAuth=this.Auth.logIn();
-this.role=this.Auth.getRole();
+
 console.log('is auth?',this.isAuth);
-console.log('your role is ',this.role);
-console.log('is true?', this.role==='User')
+console.log('your role is ',this.Auth.getRole());
+console.log('is true?', this.Auth.getRole()==='User')
 if(this.isAuth) {
   this.Cart.SyncCartWithServer(this.baseUrl).then((serverCart) => {
   })

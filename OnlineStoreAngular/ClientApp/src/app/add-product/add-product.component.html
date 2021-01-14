@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-md-4 col-lg-4 ">
+    <app-show-categories></app-show-categories>
+  </div>
+  <div class="col-md-8 col-lg-8">
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label>Title</label>
+        <input class="form-control" type="text" formControlName="title" placeholder="Title" [(ngModel)]="title">
+        <div
+          *ngIf="form.get('title').invalid && form.get('title').touched"
+          class="validation">
+          <small *ngIf="form.get('title').errors.required">title cannot be empty </small>
+          <small *ngIf="form.get('title').errors.minlength">length should be
+            more than {{form.get('title').errors.minlength.requiredLength}}.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" type="text" formControlName="desc" placeholder="Description"
+                  [(ngModel)]="description" rows="3"></textarea>
+        <div
+          *ngIf="form.get('desc').invalid && form.get('desc').touched"
+          class="validation">
+          <small *ngIf="form.get('desc').errors.required">description cannot be empty </small>
+          <small *ngIf="form.get('desc').errors.minlength">description should be
+            more than {{form.get('desc').errors.minlength.requiredLength}}.
+          </small>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Cost</label>
+        <input min=0 class="form-control" type="number" formControlName="cost" placeholder="Cost"
+                  [(ngModel)]="cost">
+        <div
+          *ngIf="form.get('cost').invalid && form.get('cost').touched"
+          class="validation">
+          <small *ngIf="form.get('cost').errors.required">cost cannot be empty </small>
+        </div>
+      </div>
+    </form>
+    <div class="row" style="margin-bottom:15px;">
+      <div class="col-md-3">
+        <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;">
+        <button type="button" class="btn btn-success" (click)="file.click()">Upload File</button>
+      </div>
+      <div class="col-md">
+    <span class="upload" *ngIf="progress > 0">
+      {{progress}}%
+    </span>
+        <span class="upload" *ngIf="!isImage && message.length>0">
+      {{message}}
+    </span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <button type="button" class="btn btn-success" [disabled]="form.invalid || form.pending || !status || cost<=0"
+                (click)="addProduct()">Add Product
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
