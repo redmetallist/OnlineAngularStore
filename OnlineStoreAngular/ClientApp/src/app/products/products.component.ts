@@ -5,6 +5,7 @@ import {CartService} from "../services/cart.service";
 import {Router} from "@angular/router";
 import {WishListService} from "../services/wish-list.service";
 import {IWishList} from "../services/wish-list.service";
+import {FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-products',
@@ -15,6 +16,9 @@ export class ProductsComponent implements OnInit {
 
   isAuth: boolean
   wishList: IWishList[] = []
+  form: FormGroup;
+  products: Product[] = []
+  isLoad: boolean = true;
 
   constructor(@Inject('BASE_URL') private baseUrl: string, private Auth: AuthService,
               private product: ProductService, private cart: CartService, private router: Router,
@@ -25,7 +29,7 @@ export class ProductsComponent implements OnInit {
     })
   }
 
-  products: Product[] = []
+
 
   ngOnInit() {
     this.product.products$.subscribe(x => {
@@ -35,7 +39,7 @@ export class ProductsComponent implements OnInit {
 
   }
 
-  isLoad: boolean = true;
+
 
   getAllProducts() {
     const request = this.product;

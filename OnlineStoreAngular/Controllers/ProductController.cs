@@ -30,11 +30,8 @@ namespace OnlineStoreAngular.Controllers
                 try
                 {
                     string[] filesInPaths = Directory.GetFiles(path);
-                    /*var files = System.IO.Directory.EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
-                                .Where(x => x.EndsWith(".png") || x.EndsWith(".jpg"));*/
-
                     byte[] mas = System.IO.File.ReadAllBytes(filesInPaths[0]);
-                    return File(mas, "image/png");
+                    return File(mas, $"image/{filesInPaths[0].Substring(filesInPaths[0].Length - 3, 3)}");
                 }
                 catch
                 {
@@ -51,11 +48,10 @@ namespace OnlineStoreAngular.Controllers
             string path = Directory.GetCurrentDirectory() + @"\Resources\Images";
             Product pr = db.Products.FirstOrDefault(x => x.Id == id);
 
-            if (Directory.Exists(path) && pr!=null)
+            if (Directory.Exists(path) && pr != null)
             {
                 try
                 {
-                    
                     return Json(new Product
                     {
                         Id = pr.Id,
@@ -113,38 +109,84 @@ namespace OnlineStoreAngular.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("uploadImage/{category}/{cost}/{description}/{id}/{title}"), DisableRequestSizeLimit]
-        public IActionResult Upload(int category, double cost, string description, int id, string title)
+        public IActionResult UploadProduct(int category, double cost, string description, int id, string title)
         {
-            try
+            if (cost > 0 && description != null && title != null)
             {
-                var file = Request.Form.Files[0];
-                var folderName = Path.Combine("Resources", "Images", id.ToString());
-                if (!Directory.Exists(folderName))
+                try
                 {
-                    Directory.CreateDirectory(folderName + id);
-                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName + id);
-                    if (file.Length > 0)
+                    var file = Request.Form.Files[0];
+                    var newProduct = new Product()
                     {
-                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                        var fullPath = Path.Combine(pathToSave, fileName);
-                        var dbPath = Path.Combine(folderName, fileName);
-                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        CategoryId = category, Cost = cost, Description = description, Title = title
+                    };
+                    db.Products.Add(newProduct);
+                    db.SaveChanges();
+                    id = newProduct.Id;
+
+                    var folderName = Path.Combine("Resources", "Images", id.ToString());
+                    if (!Directory.Exists(folderName))
+                    {
+                        Directory.CreateDirectory(folderName);
+                        var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                        if (file.Length > 0)
                         {
-                            file.CopyTo(stream);
+                            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition)
+                                .FileName.Trim('"');
+                            var fullPath = Path.Combine(pathToSave, fileName);
+                            var dbPath = Path.Combine(folderName, fileName);
+                            using (var stream = new FileStream(fullPath, FileMode.Create))
+                            {
+                                file.CopyTo(stream);
+                            }
+
+                            return Ok(new {dbPath});
                         }
 
-                        return Ok(new {dbPath});
+                        return BadRequest();
                     }
 
-                    return BadRequest();
+                    return StatusCode(423, $"ObjectExist. Cannot create");
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex}");
+                }
+            }
+
+            return StatusCode(400);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("updateProduct")]
+        public IActionResult UpdateProduct([FromBody] Product updatedProduct)
+        {
+            if (updatedProduct != null)
+            {
+                var product = db.Products.FirstOrDefault(x => x.Id == updatedProduct.Id);
+                if (product != null)
+                {
+                    try
+                    {
+                        product.Cost = updatedProduct.Cost;
+                        product.Description = updatedProduct.Description;
+                        product.Title = updatedProduct.Title;
+                        product.CategoryId = updatedProduct.CategoryId;
+
+                        db.Products.Update(product);
+                        db.SaveChanges();
+                        return StatusCode(200);
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500);
+                    }
                 }
 
-                return StatusCode(423, $"ObjectExist. Cannot create");
+                return StatusCode(400);
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex}");
-            }
+
+            return StatusCode(400);
         }
 
         [HttpGet("getProductInCategory/{id}")]
@@ -168,11 +210,5 @@ namespace OnlineStoreAngular.Controllers
                 resultList.AddRange(db.Products.ToList().Where(x => x.CategoryId == category.Id));
             }
         }
-
-
-
-
-
-
     }
 }

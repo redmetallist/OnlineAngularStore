@@ -13,6 +13,12 @@ input.ng-invalid.ng-touched{
 input.ng-valid.ng-touched {
   border: 1px solid green;
 }
+textarea.ng-invalid.ng-touched{
+  border: 1px solid red;
+}
+textarea.ng-valid.ng-touched {
+  border: 1px solid green;
+}
 
 
 a {

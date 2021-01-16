@@ -1,50 +1,110 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-5">
-      <div class="product">
-        <img class="rounded mx-auto d-block" id="item-display"
-             src={{this.imgPath}}
-             alt=""/>
+<div *ngIf="role==='Admin'; else default">
+  <form [formGroup]="form">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="product">
+            <img class="rounded mx-auto d-block" id="item-display"
+                 src={{this.imgPath}}
+                 alt=""/>
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="product-title">
+            <p>Title</p>
+            <input class="form-control" type="text" formControlName="title" placeholder="Title"
+                  required [(ngModel)]="title" >
+            <div
+              *ngIf="form.get('title').invalid && form.get('title').touched"
+              class="validation">
+              <small *ngIf="form.get('title').errors.required">title cannot be empty </small>
+              <small *ngIf="form.get('title').errors.minlength">length should be
+                more than {{form.get('title').errors.minlength.requiredLength}}.
+              </small>
+            </div>
+          </div>
 
+          <div class="product-price">
+            <p>Cost</p>
+            $ <input min=0 class="form-control" type="number" formControlName="cost" placeholder="Cost"
+                     [(ngModel)]="cost">
+            <div
+              *ngIf="form.get('cost').invalid && form.get('cost').touched"
+              class="validation">
+              <small *ngIf="form.get('cost').errors.required">cost cannot be empty </small>
+            </div>
+          </div>
+          <hr>
+        </div>
       </div>
+      <div class="row">
+        <div class="container-fluid">
+          <div class="col-md-12 product-info">
+            <p>Description</p>
+            <textarea class="form-control" type="text" formControlName="desc" placeholder="Description"
+                      rows="10" [ngModel]="description" (input)="description = $event.target.value"> </textarea>
+            <p>{{description}}</p>
+            <div
+              *ngIf="form.get('desc').invalid && form.get('desc').touched"
+              class="validation">
+              <small *ngIf="form.get('desc').errors.required">description cannot be empty </small>
+              <small *ngIf="form.get('desc').errors.minlength">description should be
+                more than {{form.get('desc').errors.minlength.requiredLength}}.
+              </small>
+            </div>
+            <button type="button" class="btn btn-success description" [disabled]="description.length<10 || title.length<3 || cost<0" (click)="updateProduct()">update product</button>
+          </div>
+          <hr>
 
+
+        </div>
+      </div>
     </div>
+  </form>
+</div>
 
-    <div class="col-md-7">
-      <div class="product-title">{{product.title}}</div>
-      <div class="product-price">$ {{product.cost}}</div>
-      <hr>
-      <div class="btn-group cart">
 
-        <ng-container *ngIf="!this.cart.isInCart(product.id) ;else noInCart">
-          <a class="to-cart btn btn-primary btn-block " (click)="addToCart(product)"><i class="fa fa-shopping-cart"
-                                                                                        aria-hidden="true"></i> Add to
-            cart</a>
-        </ng-container>
+<ng-template #default>
 
-        <ng-template #noInCart>
-
-          <a class="to-cart btn btn-success btn-block disabled"><i class="fa fa-check-circle" aria-hidden="true"></i> In
-            cart</a>
-        </ng-template>
-
-      </div>
-      <div class="btn-group wishlist">
-
-        <ng-container *ngIf="this.isInWish; else noInWish">
-          <a class="to-cart btn btn-danger btn-block disabled"><i class="fa fa-check-circle" aria-hidden="true"></i> In
-            wish</a>
-        </ng-container>
-        <ng-template #noInWish>
-          <button type="button" class="btn btn-danger" (click)="addToWish(product.id)">
-            Add to wishlist
-          </button>
-        </ng-template>
-
-      </div>
-    </div>
-  </div>
   <div class="container">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="product">
+          <img class="rounded mx-auto d-block" id="item-display"
+               src={{this.imgPath}}
+               alt=""/>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="product-title">{{product.title}}</div>
+        <div class="product-price">$ {{product.cost}}</div>
+        <hr>
+        <div class="btn-group cart">
+          <ng-container *ngIf="!this.cart.isInCart(product.id) ;else noInCart">
+            <a class="to-cart btn btn-primary btn-block " (click)="addToCart(product)">
+              <i class="fa fa-shopping-cart" aria-hidden="true"></i> Add to
+              cart</a>
+          </ng-container>
+
+          <ng-template #noInCart>
+            <a class="to-cart btn btn-success btn-block disabled"><i class="fa fa-check-circle" aria-hidden="true"></i>
+              In cart</a>
+          </ng-template>
+        </div>
+        <div class="btn-group wishlist">
+          <ng-container *ngIf="this.isInWish; else noInWish">
+            <a class="to-cart btn btn-danger btn-block disabled"><i class="fa fa-check-circle" aria-hidden="true"></i>
+              In
+              wish</a>
+          </ng-container>
+          <ng-template #noInWish>
+            <button type="button" class="btn btn-danger" (click)="addToWish(product.id)">
+              Add to wishlist
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="container-fluid">
         <div class="col-md-12 product-info">
@@ -53,10 +113,7 @@
           </section>
         </div>
         <hr>
-
-
       </div>
     </div>
   </div>
-</div>
-
+</ng-template>

@@ -21,19 +21,16 @@ export class AddProductComponent implements OnInit{
   title: string='';
   cost: number=0;
   status:boolean = false;
-  chosenCategory:string='';
   chosenCategoryID:number=-1;
   public progress: number;
   public message: string='';
   categories: Category [] = [];
-  categoryName: string='';
-  newProduct:Product;
   formData;
   isImage=false;
 
   @Output() public onUploadFinished = new EventEmitter();
   constructor(private http: HttpClient,
-              @Inject('BASE_URL') private baseUrl: string, private categoryService: CategoryService, private authService: AuthService) {
+              @Inject('BASE_URL') private baseUrl: string, private categoryService: CategoryService, private authService: AuthService, private router:Router) {
     categoryService.fromAddCategory = true;
     this.categoryService.getCategories(this.baseUrl)
       .subscribe(categories => {
@@ -77,17 +74,11 @@ export class AddProductComponent implements OnInit{
 
   }
 
-
-
-
-
-
-
   addProduct() {
     if (this.form.valid){
       if (this.status) {
+       // this.newProduct={categoryId: this.chosenCategoryID, cost: this.cost, description: this.description, id: 0, title: this.title}
         console.log(this.formData);
-        //this.http.post(this.baseUrl + 'api/product/uploadImage'+this.newProduct, formData, {reportProgress: true, observe: 'events'})
         this.http.post(this.baseUrl + 'api/product/uploadImage/'+this.chosenCategoryID+'/'+this.cost+'/'+ this.description+'/0/'+this.title    , this.formData, {reportProgress: true, observe: 'events'})
           .subscribe(event => {
             if (event.type === HttpEventType.UploadProgress){
@@ -98,6 +89,8 @@ export class AddProductComponent implements OnInit{
               this.message = 'Upload success.';
               this.onUploadFinished.emit(event.body);
               console.log(event.body)
+              alert('new product was added')
+              this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {});
             }
           });
       }

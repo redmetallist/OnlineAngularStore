@@ -4,6 +4,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Product, ProductService} from "../services/product.service";
 import {CartService} from "../services/cart.service";
 import {WishListService} from "../services/wish-list.service";
+import {AuthService} from "../services/auth.service";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-product',
@@ -13,12 +15,17 @@ import {WishListService} from "../services/wish-list.service";
 export class ProductComponent implements OnInit {
   id: number;
   isInWish=false;
+  role='User';
+  form:FormGroup;
+  product:Product;
+  description: string='';
+  title: string='';
+  cost: number=0;
   constructor(@Inject('BASE_URL') private baseUrl: string, private products: ProductService, private activateRoute: ActivatedRoute, private cart:CartService,
-              private wishListService:WishListService) {
+              private wishListService:WishListService, private authService:AuthService) {
     this.id = activateRoute.snapshot.params['id'];
     console.log('id is '+this.id)
-  //
-  //  this.wishListService.getWishFromServer()
+    console.log(this.description)
 
   }
 imgPath='';
@@ -27,14 +34,30 @@ imgPath='';
    this.wishListService.isInWish(this.id, this.baseUrl).then(res=>{
      this.isInWish=res;
    })
+    if(this.authService.getRole()!=''){
+      console.log(this.authService.getRole())
+      this.role=this.authService.getRole()
+      if(this.role==='Admin') {
+        this.form = new FormGroup({
+          title: new FormControl('', [Validators.required, Validators.minLength(3)]),
+          desc: new FormControl('', [Validators.required, Validators.minLength(10)]),
+          cost: new FormControl('', [Validators.required])
+        })
+        this.title=this.product.title
+      }
+
+    }
   }
-product:Product;
+
     getProduct(){
       const request = this.products;
       request.loadProduct(this.id, this.baseUrl).then((result) => {
 this.product=result;
         this.imgPath=this.baseUrl + 'api/product/image/'+this.id.toString()
         console.log('!!!!!')
+        this.title=this.product.title
+        this.cost=this.product.cost
+        this.description=this.product.description
       });
     }
 
@@ -51,5 +74,9 @@ this.product=result;
       if(result)
         this.isInWish=true;
     })
+  }
+
+  updateProduct() {
+
   }
 }
