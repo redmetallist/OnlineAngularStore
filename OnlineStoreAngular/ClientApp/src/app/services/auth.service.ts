@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {User, UserService} from "./user.service";
 import jwt_decode from 'jwt-decode';
-import {Subject} from "rxjs";
+import {Observable, Subject, Subscription, interval} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,10 @@ export class AuthService {
   private result: string;
   fromCheckout = false;
   public isAuthSubj$ = new Subject<boolean>();
+  sub: Subscription;
+  isSubscribe = false;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, @Inject('BASE_URL') private baseUrl: string) {
 
   }
 
@@ -23,10 +25,10 @@ export class AuthService {
     return new Promise((resolve, reject) => {
       this.http.post<User>(baseUrl + 'api/login/login', user)
         .subscribe((result: any) => {
-          //  console.log('result ', result);
+            //  console.log('result ', result);
             this.result = result.toString()
             localStorage.setItem('auth_token', result.access_token);
-this.isAuthSubj$.next(true);
+            this.isAuthSubj$.next(true);
             resolve(true);
             //this.router.navigate([''])
           },
@@ -42,15 +44,33 @@ this.isAuthSubj$.next(true);
   public logout() {
     localStorage.removeItem('auth_token');
     this.isAuthSubj$.next(false)
-    //  location.reload();
   }
 
   public logIn(): boolean {
     if (localStorage.getItem('auth_token') !== null) {
+      if (!this.isSubscribe) {
+        this.sub = interval(1000)
+          .subscribe((val) => {
+            console.log('called');
+            this.isSubscribe = true;
+            this.http.get(this.baseUrl + 'api/login/isTokenValid')
+              .subscribe(() => {
+              }, error => {
+                localStorage.removeItem('auth_token');
+                this.isAuthSubj$.next(false);
+                this.isSubscribe = false;
+                this.sub.unsubscribe();
+                this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
+                });
+              });
+          });
+      }
+
       this.isAuthSubj$.next(true);
     } else this.isAuthSubj$.next(false);
     return (localStorage.getItem('auth_token') !== null);
   }
+
 
   public getRole(): string {
     let role = ''

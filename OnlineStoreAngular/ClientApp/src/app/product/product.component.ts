@@ -14,69 +14,89 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 })
 export class ProductComponent implements OnInit {
   id: number;
-  isInWish=false;
-  role='User';
-  form:FormGroup;
-  product:Product;
-  description: string='';
-  title: string='';
-  cost: number=0;
-  constructor(@Inject('BASE_URL') private baseUrl: string, private products: ProductService, private activateRoute: ActivatedRoute, private cart:CartService,
-              private wishListService:WishListService, private authService:AuthService) {
+  isInWish = false;
+  role = 'User';
+  form: FormGroup;
+  product: Product;
+  description: string = '';
+  title: string = '';
+  cost: number = 0;
+
+  constructor(@Inject('BASE_URL') private baseUrl: string, private products: ProductService, private activateRoute: ActivatedRoute, private cart: CartService,
+              private wishListService: WishListService, private authService: AuthService) {
     this.id = activateRoute.snapshot.params['id'];
-    console.log('id is '+this.id)
+    console.log('id is ' + this.id)
     console.log(this.description)
 
   }
-imgPath='';
+
+  imgPath = '';
+
   ngOnInit() {
     this.getProduct();
-   this.wishListService.isInWish(this.id, this.baseUrl).then(res=>{
-     this.isInWish=res;
-   })
-    if(this.authService.getRole()!=''){
+    this.wishListService.isInWish(this.id, this.baseUrl).then(res => {
+      this.isInWish = res;
+    })
+    if (this.authService.getRole() != '') {
       console.log(this.authService.getRole())
-      this.role=this.authService.getRole()
-      if(this.role==='Admin') {
+      this.role = this.authService.getRole()
+      if (this.role === 'Admin') {
         this.form = new FormGroup({
           title: new FormControl('', [Validators.required, Validators.minLength(3)]),
           desc: new FormControl('', [Validators.required, Validators.minLength(10)]),
           cost: new FormControl('', [Validators.required])
         })
-        this.title=this.product.title
+        this.title = this.product.title
       }
 
     }
   }
 
-    getProduct(){
-      const request = this.products;
-      request.loadProduct(this.id, this.baseUrl).then((result) => {
-this.product=result;
-        this.imgPath=this.baseUrl + 'api/product/image/'+this.id.toString()
-        console.log('!!!!!')
-        this.title=this.product.title
-        this.cost=this.product.cost
-        this.description=this.product.description
-      });
-    }
+  getProduct() {
+    const request = this.products;
+    request.loadProduct(this.id, this.baseUrl).then((result) => {
+      this.product = result;
+      this.imgPath = this.baseUrl + 'api/product/image/' + this.id.toString()
+      console.log('!!!!!')
+      this.title = this.product.title
+      this.cost = this.product.cost
+      this.description = this.product.description
+    });
+  }
 
-  addToCart(product:Product) {
-    let id:number=product.id;
-    this.cart.addToCart(id,this.baseUrl)
+  addToCart(product: Product) {
+    let id: number = product.id;
+    this.cart.addToCart(id, this.baseUrl)
     this.cart.counterOfItemsInCart();
 
   }
 
 
   addToWish(id: number) {
-    this.wishListService.addToWish(id,this.baseUrl).then(result=>{
-      if(result)
-        this.isInWish=true;
+    this.wishListService.addToWish(id, this.baseUrl).then(result => {
+      if (result)
+        this.isInWish = true;
     })
   }
 
   updateProduct() {
+    if (this.form.valid) {
+      this.product.cost = this.cost;
+      this.product.description = this.description;
+      this.product.title = this.title;
+      this.products.updateProduct(this.baseUrl, this.product).then(res => {
+        if (!res) {
+          this.products.getProductsById(this.baseUrl, this.product.id).then(serverProduct => {
+            this.product = serverProduct;
+          })
+
+        } else {
+          alert('product updated')
+        }
+      })
+
+    } else
+      alert('your data is invalid!')
 
   }
 }

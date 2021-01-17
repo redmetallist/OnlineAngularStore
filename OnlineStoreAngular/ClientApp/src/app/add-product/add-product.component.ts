@@ -1,11 +1,10 @@
 import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {HttpClient, HttpEventType} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {Observable} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Category, CategoryService} from "../services/category.service";
 import {AuthService} from "../services/auth.service";
-import {Product} from "../services/product.service";
+
 
 @Component({
   selector: 'app-add-product',

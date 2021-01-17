@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineStoreAngular.Controllers
 {
@@ -95,5 +96,15 @@ namespace OnlineStoreAngular.Controllers
 
             return StatusCode(400);
         }
+
+        [Authorize]
+        [HttpGet("isTokenValid")]
+        public IActionResult IsTokenValid()
+        {
+            return StatusCode(200);
+        }
+
+
+
     }
 }
