@@ -46,7 +46,12 @@ export class LoginComponent {
               this.Cart.SyncCartWithServer(this.baseUrl).then();
             });
           }
+        } else {
+          this.email = '';
+          this.passHash = '';
+          alert('the entered data is incorrect or user dont exist');
         }
+
       });
 
     } else

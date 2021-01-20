@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Linq;
 
 namespace OnlineStoreAngular.Controllers
 {
@@ -59,8 +61,7 @@ namespace OnlineStoreAngular.Controllers
                 }
             }
 
-           // return BadRequest(new {errorText = "Invalid username or password."});
-           return StatusCode(400);
+            return StatusCode(400);
         }
 
         [HttpPost("register")]
@@ -82,8 +83,8 @@ namespace OnlineStoreAngular.Controllers
                                 Role = UserRole.User.ToString()
                             });
                             db.SaveChanges();
-                           return StatusCode(200, "New user successfully added");
-                           //return Ok();
+                            return StatusCode(200, "New user successfully added");
+                            //return Ok();
                         }
                         catch
                         {
@@ -104,7 +105,40 @@ namespace OnlineStoreAngular.Controllers
             return StatusCode(200);
         }
 
+        [Authorize]
+        [HttpPost("changePassword")]
+        public ActionResult ChangePassword([FromBody] dynamic obj)
+        {
+            try
+            {
+                JsonElement js = obj;
+                var currentPass = js.GetProperty("currentPass").ToString();
+                var newPass = js.GetProperty("newPass").ToString();
+                if (currentPass != null && newPass != null)
+                {
+                    var user = db.Users.FirstOrDefault(x => x.Email == User.Identity.Name);
+                    if (user != null)
+                    {
+                        if (user.PasswordHash == currentPass)
+                        {
+                            user.PasswordHash = newPass;
+                            db.Users.Update(user);
+                            db.SaveChanges();
+                            return StatusCode(200);
+                        }
 
+                        return StatusCode(400, "wrong password!");
+                    }
 
+                    return StatusCode(404, "user not found");
+                }
+
+                return StatusCode(400, "incorrect data!");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

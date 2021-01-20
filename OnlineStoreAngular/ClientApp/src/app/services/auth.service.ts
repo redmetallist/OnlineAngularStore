@@ -49,9 +49,8 @@ export class AuthService {
   public logIn(): boolean {
     if (localStorage.getItem('auth_token') !== null) {
       if (!this.isSubscribe) {
-        this.sub = interval(1000)
+        this.sub = interval(60000)
           .subscribe((val) => {
-            console.log('called');
             this.isSubscribe = true;
             this.http.get(this.baseUrl + 'api/login/isTokenValid')
               .subscribe(() => {
@@ -99,4 +98,16 @@ export class AuthService {
     })
   }
 
+  public changePassword( currentPass:string, newPass:string): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+      this.http.post(this.baseUrl + 'api/login/changePassword', {'currentPass':currentPass, 'newPass':newPass})
+        .subscribe(() => {
+            resolve(true)
+          },  () => {
+          resolve(false);
+        });
+    })
+  }
+
 }
+

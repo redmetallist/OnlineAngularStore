@@ -12,6 +12,7 @@ import {AdminOrdersComponent} from "./orders/admin-orders/admin-orders.component
 import {AddCategoryComponent} from "./categories/add-category/add-category.component";
 import {AppGuard} from "./app.guard";
 import {AddProductComponent} from "./add-product/add-product.component";
+import {ChangePasswordComponent} from './change-password/change-password.component';
 
 
 
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'cart', component: CartComponent },
   { path: 'wishes', component: WishListComponent },
   { path: 'orders', component: UserOrdersComponent },
+  { path: 'changePassword', component: ChangePasswordComponent},
   { path: 'addProduct', component: AddProductComponent, canActivate:[AppGuard]},
   { path: 'orderList', component: AdminOrdersComponent, canActivate:[AppGuard] },
   { path: 'addCategory', component: AddCategoryComponent, canActivate:[AppGuard] }

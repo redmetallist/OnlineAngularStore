@@ -43,7 +43,7 @@
     </form>
     <div class="row" style="margin-bottom:15px;">
       <div class="col-md-3">
-        <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;">
+        <input type="file" #file placeholder="Choose file" (change)="uploadFile(file.files)" style="display:none;"  accept="image/png, image/jpeg " >
         <button type="button" class="btn btn-success" (click)="file.click()">Upload File</button>
       </div>
       <div class="col-md">
@@ -56,8 +56,11 @@
       </div>
     </div>
     <div class="row">
+      <span *ngIf="!isLastCategory">you can add product only to last category. choose another category</span>
+    </div>
+    <div class="row">
       <div class="col-md-4">
-        <button type="button" class="btn btn-success" [disabled]="form.invalid || form.pending || !status || cost<=0 || chosenCategoryID===-1 "
+        <button type="button" class="btn btn-success" [disabled]="form.invalid || form.pending || !status || cost<=0 || chosenCategoryID===-1 || !isLastCategory "
                 (click)="addProduct()">Add Product
         </button>
       </div>

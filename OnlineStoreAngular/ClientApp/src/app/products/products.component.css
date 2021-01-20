@@ -4,21 +4,6 @@
 .price {
   font-size: 18px
 }
-
-.sm-text {
-  font-size: 14px
-}
-
-.fa-star {
-  color: #FF6F00;
-  cursor: pointer
-}
-
-.fa-star-o {
-  color: #FF6F00;
-  cursor: pointer
-}
-
 .to-cart  {
   font-size: 14px;
 }
@@ -58,4 +43,40 @@ img {
 }
 
 
+@media (max-width: 1000px) {
+  .card{
+    margin-top: 0.5rem;
+    max-width: 200px;
+  }
+  .price {
+    font-size: 14px
+  }
 
+  .to-cart  {
+    font-size: 14px;
+  }
+
+  .like {
+    color: #757575;
+    font-weight: bold;
+    background-color: #EEEEEE;
+    padding: 7px;
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  img {
+    text-align: center;
+    height: 100px;
+    width: auto;
+    background-color: #f8f8f9;
+  }
+
+  .text-center{
+    line-height: 50px;
+
+  }
+  .text-center span{
+    font-size: 14px;
+  }
+}

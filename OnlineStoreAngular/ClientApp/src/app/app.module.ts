@@ -25,6 +25,7 @@ import {AdminOrdersComponent} from "./orders/admin-orders/admin-orders.component
 import {AddCategoryComponent} from "./categories/add-category/add-category.component";
 import {AppGuard} from "./app.guard";
 import {AddProductComponent} from "./add-product/add-product.component";
+import {ChangePasswordComponent} from './change-password/change-password.component';
 
 
 
@@ -46,7 +47,8 @@ import {AddProductComponent} from "./add-product/add-product.component";
     UserOrdersComponent,
     AdminOrdersComponent,
     AddCategoryComponent,
-    AddProductComponent
+    AddProductComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule.withServerTransition({appId: 'ng-cli-universal'}),

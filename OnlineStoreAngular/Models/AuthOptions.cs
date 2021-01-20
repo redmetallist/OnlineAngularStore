@@ -8,7 +8,7 @@ namespace OnlineStoreAngular.Models
         public const string ISSUER = "OnlineStoreServer";
         public const string AUDIENCE = "OnlineStoreClient";
         const string KEY = "OnlineStoreClientsecretKey";
-        public const int LIFETIME = 2;
+        public const int LIFETIME = 60;
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
