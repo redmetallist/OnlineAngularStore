@@ -22,7 +22,7 @@ export class AuthService {
 
 
   public login(user: User, baseUrl: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.http.post<User>(baseUrl + 'api/login/login', user)
         .subscribe((result: any) => {
             //  console.log('result ', result);
@@ -35,7 +35,7 @@ export class AuthService {
           (error) => {
             //console.log(error.status);
             this.isAuthSubj$.next(false);
-            reject(false);
+           resolve(false);
           });
     })
 

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OnlineStoreAngular.Models;
 using System;
@@ -8,8 +8,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
-using Microsoft.AspNetCore.Authorization;
-using Newtonsoft.Json.Linq;
 
 namespace OnlineStoreAngular.Controllers
 {
@@ -47,7 +45,6 @@ namespace OnlineStoreAngular.Controllers
                         ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
                     var now = DateTime.UtcNow;
-                    // создаем JWT-токен
                     var jwt = new JwtSecurityToken(issuer: AuthOptions.ISSUER, audience: AuthOptions.AUDIENCE,
                         notBefore: now, claims: userClaims,
                         expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),

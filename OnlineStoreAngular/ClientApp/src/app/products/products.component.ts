@@ -74,7 +74,6 @@ export class ProductsComponent implements OnInit {
 
   isInWish(id: number): boolean {
     if (this.wishList.length > 0) {
-      console.log('from isInWish')
       return (this.wishList.filter(elem => {
         return elem.productId === id
       })).length > 0

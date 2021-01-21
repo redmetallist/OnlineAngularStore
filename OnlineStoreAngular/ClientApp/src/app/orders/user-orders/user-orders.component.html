@@ -20,12 +20,18 @@
                 <small>Cost by item:</small>
               </div>
               <div class="row">
+                <small>Quantity:</small>
+              </div>
+              <div class="row">
                 <small>Total cost:</small>
               </div>
             </div>
             <div class="col-md-4 col-lg-4">
               <div class="row">
                 <small>{{product.cost}}</small>
+              </div>
+              <div class="row">
+                <small>{{product.quantity}}</small>
               </div>
               <div class="row">
                 <small>{{product.cost * product.quantity}}</small>
@@ -65,12 +71,18 @@
                 <small>Cost by item:</small>
               </div>
               <div class="row">
+                <small>Quantity:</small>
+              </div>
+              <div class="row">
                 <small>Total cost:</small>
               </div>
             </div>
             <div class="col-md-4 col-lg-4">
               <div class="row">
                 <small>{{product.cost}}</small>
+              </div>
+              <div class="row">
+                <small>{{product.quantity}}</small>
               </div>
               <div class="row">
                 <small>{{product.cost * product.quantity}}</small>
@@ -87,12 +99,12 @@
 
     <div *ngIf="order.order[0].isComplete; else uncompletedCost">
       <div class="completed">
-        <small>Total cost is {{order.totalCost}}</small>
+        <h3>Total cost is {{order.totalCost}}</h3>
       </div>
     </div>
     <ng-template #uncompletedCost>
     <div class="uncompleted">
-      <small>Total cost is {{order.totalCost}}</small>
+      <h3>Total cost is {{order.totalCost}}</h3>
     </div>
     </ng-template>
 

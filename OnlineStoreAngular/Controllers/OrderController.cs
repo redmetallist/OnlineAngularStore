@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineStoreAngular.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using OnlineStoreAngular.Models;
 
 namespace OnlineStoreAngular.Controllers
 {
@@ -129,11 +127,11 @@ namespace OnlineStoreAngular.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("getUserInfoFromOrder")]
-        public IActionResult GetUserInfoFromOrder([FromBody]int userId)
+        public IActionResult GetUserInfoFromOrder([FromBody] int userId)
         {
             try
             {
-                return new JsonResult(db.UsersData.FirstOrDefault(x=> x.UserId==userId));
+                return new JsonResult(db.UsersData.FirstOrDefault(x => x.UserId == userId));
             }
             catch
             {
@@ -148,7 +146,7 @@ namespace OnlineStoreAngular.Controllers
             try
             {
                 var order = db.ActiveOrders.Where(x => x.OrderId == orderId).ToList();
-                List<ArchiveOrder> archiveOrder=new List<ArchiveOrder>();
+                List<ArchiveOrder> archiveOrder = new List<ArchiveOrder>();
                 foreach (var product in order)
                 {
                     var prod = new ArchiveOrder()
@@ -164,10 +162,10 @@ namespace OnlineStoreAngular.Controllers
                     archiveOrder.Add(prod);
                     db.ActiveOrders.Remove(product);
                 }
-                
+
                 db.ArchiveOrders.AddRange(archiveOrder);
                 db.SaveChanges();
-                return  StatusCode(200);
+                return StatusCode(200);
             }
             catch
             {
