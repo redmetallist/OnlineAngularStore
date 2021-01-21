@@ -62,7 +62,7 @@ namespace OnlineStoreAngular.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult Register([FromBody] User user)
+        public IActionResult Register([FromBody] User user)
         {
             if (user.Email != null && user.PasswordHash != null && user.PasswordHash.Length >= 6)
             {

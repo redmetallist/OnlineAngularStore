@@ -85,7 +85,7 @@ export class AuthService {
 
   public register(baseUrl: string, user: User): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      this.http.post(baseUrl + 'api/login/register', user)
+      this.http.post(baseUrl + 'api/login/register', user, {responseType: 'text'})
         .subscribe(() => {
           this.login(user, baseUrl).then(res => {
             console.log('from register in login')
