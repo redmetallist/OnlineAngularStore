@@ -1,5 +1,6 @@
 import {Component, Inject, OnInit, Renderer2} from '@angular/core';
 import {CheckoutService, Order} from "../../services/checkout.service";
+import {UserData} from "../../services/user-data.service";
 
 @Component({
   selector: 'app-admin-orders',
@@ -9,6 +10,7 @@ import {CheckoutService, Order} from "../../services/checkout.service";
 export class AdminOrdersComponent implements OnInit {
 
   orders: ClientOrders[] = []
+  userData: UserData;
 
   constructor(@Inject('BASE_URL') private baseUrl: string, private checkout: CheckoutService, private renderer: Renderer2) {
   }
@@ -17,23 +19,33 @@ export class AdminOrdersComponent implements OnInit {
   ngOnInit() {
     this.checkout.getActiveOrders(this.baseUrl).then(result => {
       console.log(result)
-      result.forEach(element => {
+      result.forEach(async element => {
 
         if (this.orders.filter(x => {
           return x.orderId == element.orderId
         }).length == 0) {
+          await this.checkout.getUserDataByOrder(this.baseUrl, element.userId).then(userData => {
+            if (userData != null)
+              this.userData = userData
+          })
           let totalCost = 0;
-          this.orders.push({
-            orderId: element.orderId, order: result.filter(x => {
+          await this.orders.push({
+            orderId: element.orderId,
+            order: result.filter(x => {
               if (x.orderId == element.orderId) {
                 totalCost += x.cost * x.quantity;
                 return true
               } else {
                 return false
               }
-            }), totalCost: totalCost
+            }),
+            totalCost: totalCost,
+            firstName: this.userData.firstName,
+            lastName: this.userData.lastName,
+            mobileNumber: this.userData.mobileNumber
           });
         }
+        this.userData = null;
       })
     })
     console.log(this.orders)

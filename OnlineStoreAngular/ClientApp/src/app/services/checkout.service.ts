@@ -51,6 +51,20 @@ export class CheckoutService {
     })
   }
 
+  public getUserDataByOrder(baseUrl:string, userId:number):Promise<UserData>{
+    return new Promise<UserData>(resolve => {
+      if (this.auth.logIn()) {
+        this.http.post<UserData>(baseUrl + 'api/order/getUserInfoFromOrder', userId)
+          .subscribe((result: UserData) => {
+              resolve(result)
+            },
+            (error) => {
+              resolve(null)
+            });
+      }
+    })
+  }
+
   public completeOrder(baseUrl:string, id:number):Promise<boolean>{
     return new Promise<boolean>(resolve => {
       if (this.auth.logIn()) {

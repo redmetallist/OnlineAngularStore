@@ -1,7 +1,7 @@
 <ng-container *ngIf="orders.length>0 ; else noOrders">
   <div [id]="order.orderId" class="root" *ngFor="let order of orders">
 
-    <div  class="row" *ngFor="let product of order.order">
+    <div class="row" *ngFor="let product of order.order">
 
       <div class="row">
         <div class="col-md-3 col-lg-3"><img class="img-fluid"
@@ -33,16 +33,21 @@
 
       </div>
     </div>
-
-
-
-
-
-
     <div>
       <small>Total cost is {{order.totalCost}}</small>
     </div>
-    <div><button (click)="completeOrder(order.orderId)">Complete order</button></div>
+    <div>
+      <small>First name is {{order.firstName}}</small>
+    </div>
+    <div>
+      <small>Last name is {{order.lastName}}</small>
+    </div>
+    <div>
+      <small>Mobile number is {{order.mobileNumber}}</small>
+    </div>
+    <div>
+      <button (click)="completeOrder(order.orderId)">Complete order</button>
+    </div>
   </div>
 
 </ng-container>

@@ -15,6 +15,7 @@ export class AuthService {
   public isAuthSubj$ = new Subject<boolean>();
   sub: Subscription;
   isSubscribe = false;
+  firstCallCheckValid = true;
 
   constructor(private http: HttpClient, private router: Router, @Inject('BASE_URL') private baseUrl: string) {
 
@@ -35,7 +36,7 @@ export class AuthService {
           (error) => {
             //console.log(error.status);
             this.isAuthSubj$.next(false);
-           resolve(false);
+            resolve(false);
           });
     })
 
@@ -44,30 +45,45 @@ export class AuthService {
   public logout() {
     localStorage.removeItem('auth_token');
     this.isAuthSubj$.next(false)
+    if (this.isSubscribe) {
+      this.sub.unsubscribe();
+      this.isSubscribe = false;
+    }
+
   }
 
   public logIn(): boolean {
     if (localStorage.getItem('auth_token') !== null) {
+
+      if (this.firstCallCheckValid) {
+        this.checkValidToken();
+        this.firstCallCheckValid = false;
+      }
+
       if (!this.isSubscribe) {
         this.sub = interval(60000)
           .subscribe((val) => {
             this.isSubscribe = true;
-            this.http.get(this.baseUrl + 'api/login/isTokenValid')
-              .subscribe(() => {
-              }, error => {
-                localStorage.removeItem('auth_token');
-                this.isAuthSubj$.next(false);
-                this.isSubscribe = false;
-                this.sub.unsubscribe();
-                this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
-                });
-              });
+            this.checkValidToken();
           });
       }
 
       this.isAuthSubj$.next(true);
     } else this.isAuthSubj$.next(false);
     return (localStorage.getItem('auth_token') !== null);
+  }
+
+  private checkValidToken() {
+    this.http.get(this.baseUrl + 'api/login/isTokenValid')
+      .subscribe(() => {
+      }, () => {
+        localStorage.removeItem('auth_token');
+        this.isAuthSubj$.next(false);
+        this.isSubscribe = false;
+        this.sub.unsubscribe();
+        this.router.navigateByUrl('', {skipLocationChange: false}).then(() => {
+        });
+      })
   }
 
 
@@ -98,12 +114,12 @@ export class AuthService {
     })
   }
 
-  public changePassword( currentPass:string, newPass:string): Promise<boolean> {
+  public changePassword(currentPass: string, newPass: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-      this.http.post(this.baseUrl + 'api/login/changePassword', {'currentPass':currentPass, 'newPass':newPass})
+      this.http.post(this.baseUrl + 'api/login/changePassword', {'currentPass': currentPass, 'newPass': newPass})
         .subscribe(() => {
-            resolve(true)
-          },  () => {
+          resolve(true)
+        }, () => {
           resolve(false);
         });
     })
